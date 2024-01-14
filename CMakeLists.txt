@@ -12,3 +12,7 @@ include_directories(opengl PRIVATE includes)
 # glad
 add_subdirectory(libs/glad)
 target_link_libraries(opengl glad)
+
+# primitives
+add_subdirectory(libs/primitives)
+target_link_libraries(opengl primitives)

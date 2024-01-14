@@ -7,6 +7,11 @@
 #include <vector>
 #include <fstream>
 
+//local includes
+#include <element_buffer.hpp>
+#include <array_buffers.hpp>
+#include <vertex_array.hpp>
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -80,7 +85,6 @@ int main() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-
     // operations
     float vertices[] = {
          0.5f,  0.5f, 0.0f,
@@ -90,23 +94,16 @@ int main() {
     };
     unsigned int indices[] = {0,1,3,1,2,3};
 
-    unsigned int vbo, vao, ebo;
+    opengl::vertex_array vao;
 
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-    glGenVertexArrays(1, &vao);
+    opengl::array_buffer vbo;
+    vbo.setData(vertices, sizeof(vertices));
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    opengl::element_buffer ebo;
+    ebo.setData(indices, sizeof(indices));
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -116,7 +113,7 @@ int main() {
 //      -------------------- Render -------------------
 
         glUseProgram(shaderProgram);
-        glBindVertexArray(vao);
+        vao.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 //      -----------------------------------------------
@@ -125,8 +122,6 @@ int main() {
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
     glDeleteProgram(shaderProgram);
 
     glfwTerminate();
