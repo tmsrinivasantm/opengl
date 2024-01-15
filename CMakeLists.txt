@@ -10,8 +10,8 @@ target_link_libraries(opengl glfw dl pthread X11  Xrandr Xi)
 include_directories(opengl PRIVATE includes)
 
 # glad
-add_subdirectory(libs/glad)
-target_link_libraries(opengl glad)
+add_subdirectory(libs/deps)
+target_link_libraries(opengl deps)
 
 # primitives
 add_subdirectory(libs/primitives)

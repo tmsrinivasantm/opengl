@@ -11,6 +11,7 @@
 #include <element_buffer.hpp>
 #include <array_buffers.hpp>
 #include <vertex_array.hpp>
+#include <texture.hpp>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -40,7 +41,10 @@ int compileShader(unsigned int shaderType, const std::string &filename) {
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if(!success){
         glGetShaderInfoLog(shader, 512, NULL, infolog);
-        std::cout << "FAILED TO COMPILE SHADER => " << infolog << std::endl;
+        if (shaderType == GL_VERTEX_SHADER)
+            std::cout << "FAILED TO COMPILE VERTEX SHADER => " << infolog << std::endl;
+        else if (shaderType == GL_FRAGMENT_SHADER)
+            std::cout << "FAILED TO COMPILE FRAGMENT SHADER => " << infolog << std::endl;
     }
 
     return shader;
@@ -88,13 +92,19 @@ int main() {
     // operations
     {
         float vertices[] = {
-//               position           colour
-             0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0,
-             0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0,
-            -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0,
-            -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0
+//               position           colour       textures
+             0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0, 1.0f, 1.0f,
+             0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0, 0.0f, 0.0f,
+            -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0, 0.0f, 1.0f
         };
         unsigned int indices[] = {0,1,3,1,2,3};
+        float texture_coords[] = {
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f
+        };
 
         opengl::vertex_array vao;
 
@@ -105,11 +115,18 @@ int main() {
         ebo.setData(indices, sizeof(indices));
 
         //position
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
         // colour
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
         glEnableVertexAttribArray(1);
+        // texture
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
+        glEnableVertexAttribArray(2);
+
+
+        // textures
+        opengl::texture texture("../src/textures/abstract_blured.jpg");
 
         while (!glfwWindowShouldClose(window)) {
 
@@ -120,6 +137,7 @@ int main() {
 
             glUseProgram(shaderProgram);
             vao.bind();
+            texture.bind();
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 //          -----------------------------------------------
