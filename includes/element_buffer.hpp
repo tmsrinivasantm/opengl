@@ -1,11 +1,10 @@
 #pragma once
-#include <buffer.hpp>
 #include <glad/glad.h>
+#include <iostream>
 namespace opengl {
-class element_buffer : public buffer{
+class element_buffer{ 
 public:
     element_buffer();
-    ~element_buffer();
     void bind();
     void unbind();
     void setData(unsigned int data[], int size);

@@ -1,13 +1,13 @@
 #pragma once
 #include <glad/glad.h>
-#include <buffer.hpp>
+#include <iostream>
 namespace opengl {
-class array_buffer: public buffer {
+class array_buffer {
 public:
     array_buffer();
-    ~array_buffer();
     void bind();
     void unbind();
+    void setData(float data[], int size);
 private:
     unsigned int identifier;
 };

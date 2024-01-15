@@ -87,10 +87,11 @@ int main() {
 
     // operations
     float vertices[] = {
-         0.5f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
+//           position           colour
+         0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0,
+         0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0,
+        -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0,
+        -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0
     };
     unsigned int indices[] = {0,1,3,1,2,3};
 
@@ -102,8 +103,12 @@ int main() {
     opengl::element_buffer ebo;
     ebo.setData(indices, sizeof(indices));
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    //position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // colour
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     while (!glfwWindowShouldClose(window)) {
 
