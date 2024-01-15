@@ -5,6 +5,7 @@ namespace opengl {
 class element_buffer{ 
 public:
     element_buffer();
+    ~element_buffer();
     void bind();
     void unbind();
     void setData(unsigned int data[], int size);

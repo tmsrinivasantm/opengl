@@ -86,48 +86,50 @@ int main() {
     glDeleteShader(fragmentShader);
 
     // operations
-    float vertices[] = {
-//           position           colour
-         0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0,
-         0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0,
-        -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0,
-        -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0
-    };
-    unsigned int indices[] = {0,1,3,1,2,3};
+    {
+        float vertices[] = {
+//               position           colour
+             0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0,
+             0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0,
+            -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0,
+            -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0
+        };
+        unsigned int indices[] = {0,1,3,1,2,3};
 
-    opengl::vertex_array vao;
+        opengl::vertex_array vao;
 
-    opengl::array_buffer vbo;
-    vbo.setData(vertices, sizeof(vertices));
+        opengl::array_buffer vbo;
+        vbo.setData(vertices, sizeof(vertices));
 
-    opengl::element_buffer ebo;
-    ebo.setData(indices, sizeof(indices));
+        opengl::element_buffer ebo;
+        ebo.setData(indices, sizeof(indices));
 
-    //position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // colour
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);
+        //position
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        // colour
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+        glEnableVertexAttribArray(1);
 
-    while (!glfwWindowShouldClose(window)) {
+        while (!glfwWindowShouldClose(window)) {
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
 
-//      -------------------- Render -------------------
+//          -------------------- Render -------------------
 
-        glUseProgram(shaderProgram);
-        vao.bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            glUseProgram(shaderProgram);
+            vao.bind();
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-//      -----------------------------------------------
+//          -----------------------------------------------
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+
+        glDeleteProgram(shaderProgram);
     }
-
-    glDeleteProgram(shaderProgram);
 
     glfwTerminate();
     return 0;

@@ -4,6 +4,7 @@ namespace opengl {
 class vertex_array {
 public:
     vertex_array();
+    ~vertex_array();
     void bind();
     void unbind();
 private:
