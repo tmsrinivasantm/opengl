@@ -1,11 +1,10 @@
-#include <cstdio>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 #include <sstream>
-#include <string>
-#include <vector>
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //local includes
 #include <element_buffer.hpp>
@@ -138,6 +137,16 @@ int main() {
             glUseProgram(shaderProgram);
             vao.bind();
             texture.bind();
+
+            glm::mat4 transform = glm::mat4(1.0f);
+            transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+            transform = glm::rotate(transform, (float)glfwGetTime(),glm::vec3(0.0f,0.0f,1.0f));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+            transform = glm::mat4(1.0f);
+            transform = glm::translate(transform, glm::vec3(0.5f, 0.5f, 0.0f));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 //          -----------------------------------------------
