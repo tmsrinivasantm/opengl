@@ -1,52 +1,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <sstream>
-#include <fstream>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 //local includes
 #include <element_buffer.hpp>
 #include <array_buffers.hpp>
 #include <vertex_array.hpp>
 #include <texture.hpp>
+#include <shader.hpp>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
-}
-std::string readFile(const std::string &filename) {
-    std::ifstream file(filename);
-    std::string line;
-    std::stringstream ss;
-
-    while(getline(file, line)){
-        ss << line << '\n';
-    }
-    return ss.str();
-}
-
-int compileShader(unsigned int shaderType, const std::string &filename) {
-    const char* shaderSource; 
-    std::string shaderString;
-    char infolog[512];
-    int shader, success;
-    shaderString = readFile(filename);
-    shaderSource = shaderString.c_str();
-    shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &shaderSource,NULL);
-    glCompileShader(shader);
-
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if(!success){
-        glGetShaderInfoLog(shader, 512, NULL, infolog);
-        if (shaderType == GL_VERTEX_SHADER)
-            std::cout << "FAILED TO COMPILE VERTEX SHADER => " << infolog << std::endl;
-        else if (shaderType == GL_FRAGMENT_SHADER)
-            std::cout << "FAILED TO COMPILE FRAGMENT SHADER => " << infolog << std::endl;
-    }
-
-    return shader;
 }
 
 int main() {
@@ -68,25 +32,6 @@ int main() {
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-    int vertexShader, fragmentShader;
-    unsigned int shaderProgram;
-    std::string vertShaderString, fragShaderString;
-    // compile shaders
-    vertexShader = compileShader(GL_VERTEX_SHADER, "../vert.shader");
-    fragmentShader = compileShader(GL_FRAGMENT_SHADER, "../frag.shader");
-
-    shaderProgram = glCreateProgram();
-
-    // attach shaders
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-
-    glLinkProgram(shaderProgram);
-
-    // delete shaders
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 
     // operations
     {
@@ -123,9 +68,13 @@ int main() {
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
         glEnableVertexAttribArray(2);
 
+        // shaders
+        opengl::shader myShader("../vert.shader", "../frag.shader");
+
 
         // textures
         opengl::texture texture("../src/textures/abstract_blured.jpg");
+        opengl::texture texture2("../src/textures/david.jpg");
 
         while (!glfwWindowShouldClose(window)) {
 
@@ -134,19 +83,19 @@ int main() {
 
 //          -------------------- Render -------------------
 
-            glUseProgram(shaderProgram);
+            myShader.use();
             vao.bind();
-            texture.bind();
+            texture2.bind();
 
             glm::mat4 transform = glm::mat4(1.0f);
-            transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
             transform = glm::rotate(transform, (float)glfwGetTime(),glm::vec3(0.0f,0.0f,1.0f));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+            myShader.setMatrix4f("transform", transform);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+            texture.bind();
             transform = glm::mat4(1.0f);
-            transform = glm::translate(transform, glm::vec3(0.5f, 0.5f, 0.0f));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+            transform = glm::rotate(transform, -(float)glfwGetTime(),glm::vec3(0.0f,0.0f,1.0f));
+            myShader.setMatrix4f("transform", transform);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 //          -----------------------------------------------
@@ -155,7 +104,6 @@ int main() {
             glfwPollEvents();
         }
 
-        glDeleteProgram(shaderProgram);
     }
 
     glfwTerminate();

@@ -3,4 +3,5 @@ add_library(primitives
     element_buffer.cpp 
     vertex_array.cpp
     texture.cpp
+    shader.cpp
 )
