@@ -1,6 +1,5 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/gtc/matrix_transform.hpp>
 
 //local includes
 #include <element_buffer.hpp>
@@ -8,6 +7,7 @@
 #include <vertex_array.hpp>
 #include <texture.hpp>
 #include <shader.hpp>
+#include <matrices.hpp>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -23,6 +23,7 @@ int main() {
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
+
         return -1;
     }
     glfwMakeContextCurrent(window);
@@ -33,21 +34,70 @@ int main() {
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // operations
     {
-        float vertices[] = {
-//               position           colour       textures
-             0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0, 1.0f, 1.0f,
-             0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0, 1.0f, 0.0f,
-            -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0, 0.0f, 0.0f,
-            -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0, 0.0f, 1.0f
+
+//         float vertices[] = {
+// //               position           colour       textures
+//              0.5f,  0.5f, 0.0f,  1.0, 0.0, 0.0, 1.0f, 1.0f,
+//              0.5f, -0.5f, 0.0f,  0.0, 1.0, 0.0, 1.0f, 0.0f,
+//             -0.5f, -0.5f, 0.0f,  0.0, 0.0, 1.0, 0.0f, 0.0f,
+//             -0.5f,  0.5f, 0.0f,  1.0, 1.0, 1.0, 0.0f, 1.0f,
+//              0.5f,  0.5f,-1.0f,  1.0, 0.0, 0.0, 1.0f, 1.0f,
+//              0.5f, -0.5f,-1.0f,  0.0, 1.0, 0.0, 1.0f, 0.0f,
+//             -0.5f, -0.5f,-1.0f,  0.0, 0.0, 1.0, 0.0f, 0.0f,
+//             -0.5f,  0.5f,-1.0f,  1.0, 1.0, 1.0, 0.0f, -1.0f
+//         };
+
+           float vertices[] = {
+           -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+           0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+           0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+           0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+           -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+           -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+           0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+           0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+           0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+           -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+           -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+           -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+           -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+           -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+           -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+           0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+           0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+           0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+           0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+           0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+           0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+           -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+           0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+           0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+           0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+           -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+           -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+           0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+           0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+           0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+           -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+           -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
         };
-        unsigned int indices[] = {0,1,3,1,2,3};
-        float texture_coords[] = {
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f
+        unsigned int indices[] = {
+            0,1,3,1,2,3,
+            4,5,0,5,1,0,
+            4,5,7,5,6,7,
+            3,2,7,3,6,8,
+            4,0,7,0,3,7,
+            5,1,6,1,2,6
         };
 
         opengl::vertex_array vao;
@@ -55,48 +105,53 @@ int main() {
         opengl::array_buffer vbo;
         vbo.setData(vertices, sizeof(vertices));
 
-        opengl::element_buffer ebo;
-        ebo.setData(indices, sizeof(indices));
+        // opengl::element_buffer ebo;
+        // ebo.setData(indices, sizeof(indices));
 
-        //position
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        //position attribute set
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-        // colour
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
-        glEnableVertexAttribArray(1);
-        // texture
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
+        // colour attribute set
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
+        // glEnableVertexAttribArray(1);
+        // texture attribute set
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
         glEnableVertexAttribArray(2);
+
+        // textures
+        opengl::texture texture("../src/textures/cat_minimal.jpg");
+
+        // vert operations
+        opengl::matrix4f model;
+        opengl::matrix4f view;
+        opengl::matrix4f projection;
+
+        projection = opengl::perspective(opengl::degrees_to_radians(45.0f), (800.0f/600.0f), 0.1f, 100.0f);
+        opengl::rotate(model, opengl::degrees_to_radians(-55.0f), (float[]){1.0f, 0.0f, 0.0f});
+        opengl::translate(view, (float[]){0.0f, 0.0f, -3.0f});
 
         // shaders
         opengl::shader myShader("../vert.shader", "../frag.shader");
+        myShader.use();
+        myShader.setMatrix4f("model", model);
+        myShader.setMatrix4f("view", view);
+        myShader.setMatrix4f("projection", projection);
 
-
-        // textures
-        opengl::texture texture("../src/textures/abstract_blured.jpg");
-        opengl::texture texture2("../src/textures/david.jpg");
-
+        glEnable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window)) {
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 //          -------------------- Render -------------------
-
             myShader.use();
             vao.bind();
-            texture2.bind();
-
-            glm::mat4 transform = glm::mat4(1.0f);
-            transform = glm::rotate(transform, (float)glfwGetTime(),glm::vec3(0.0f,0.0f,1.0f));
-            myShader.setMatrix4f("transform", transform);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
             texture.bind();
-            transform = glm::mat4(1.0f);
-            transform = glm::rotate(transform, -(float)glfwGetTime(),glm::vec3(0.0f,0.0f,1.0f));
-            myShader.setMatrix4f("transform", transform);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            model.initialize();
+            opengl::rotate(model, (float)glfwGetTime(), (float[]){0.5f, 1.0f, 0.0f});
+            myShader.setMatrix4f("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 //          -----------------------------------------------
 

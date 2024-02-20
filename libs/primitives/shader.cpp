@@ -1,3 +1,4 @@
+#include "matrices.hpp"
 #include <shader.hpp>
 #include <sstream>
 #include <fstream>
@@ -56,8 +57,8 @@ void shader::setFragShader(const std::string &fragFilepath) {
     fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragFilepath);
     glAttachShader(identifier, fragmentShader);
 }
-void shader::setMatrix4f(const char *uniformName, glm::mat4 &matrix) {
-    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
+void shader::setMatrix4f(const char *uniformName, matrix4f &matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName), 1, GL_FALSE, matrix.getValue());
 }
 shader::~shader() {
     glDeleteShader(vertexShader);

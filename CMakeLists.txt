@@ -16,3 +16,7 @@ target_link_libraries(opengl deps)
 # primitives
 add_subdirectory(libs/primitives)
 target_link_libraries(opengl primitives)
+
+#operations
+add_subdirectory(libs/math)
+target_link_libraries(opengl math)
