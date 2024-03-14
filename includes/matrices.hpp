@@ -11,7 +11,7 @@ namespace opengl {
             void operator = (const matrix4f &mat);
             inline float* getValue() { return &values[0][0]; }
             void initialize();
-            matrix4f transpose();
+            void transpose();
         private:
             float values[4][4];
             float &m11 = values[0][0], &m12 = values[0][1], &m13 = values[0][2], &m14 = values[0][3];

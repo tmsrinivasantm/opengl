@@ -124,13 +124,13 @@ matrix4f perspective(float fov, float aspect_ratio, float near, float far) {
     return perspective;
 }
 
-  matrix4f matrix4f::transpose() {
-    matrix4f result;
+  void matrix4f::transpose() {
     for(int i = 0; i < 4; i++) {
-      for(int j = 0; j < 4; j++) {
-        result.values[i][j] = values[j][i];
+      for(int j = i; j < 4; j++) {
+        float temp = values[i][j];
+        values[i][j] = values[j][i];
+        values[j][i] = temp;
       }
     }
-    return result;
   }
 } // namespace opengl
