@@ -1,1 +1,1 @@
-add_library(math matrices.cpp)
+add_library(math matrices.cpp vector.cpp )

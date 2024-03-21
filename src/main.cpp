@@ -8,6 +8,8 @@
 #include <texture.hpp>
 #include <shader.hpp>
 #include <matrices.hpp>
+#include <vector.hpp>
+#include <camera.hpp>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -127,8 +129,7 @@ int main() {
         opengl::matrix4f projection;
 
         projection = opengl::perspective(opengl::degrees_to_radians(45.0f), (800.0f/600.0f), 0.1f, 100.0f);
-        opengl::rotate(model, opengl::degrees_to_radians(-55.0f), (float[]){1.0f, 0.0f, 0.0f});
-        opengl::translate(view, (float[]){0.0f, 0.0f, -3.0f});
+        opengl::translate(view, opengl::vec3(0.0f, 0.0f, -3.0f));
 
         // shaders
         opengl::shader myShader("../vert.shader", "../frag.shader");
@@ -136,6 +137,7 @@ int main() {
         myShader.setMatrix4f("model", model);
         myShader.setMatrix4f("view", view);
         myShader.setMatrix4f("projection", projection);
+        opengl::camera cam(opengl::vec3(0.0f, 0.0f, 3.0f));
 
         glEnable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window)) {
@@ -150,6 +152,16 @@ int main() {
             model.initialize();
             opengl::rotate(model, (float)glfwGetTime(), (float[]){0.5f, 1.0f, 0.0f});
             myShader.setMatrix4f("model", model);
+
+            const float radius = 3.0f;
+            float camX = sin(glfwGetTime()) * radius;
+            float camZ = cos(glfwGetTime()) + radius;
+            // float camX = ;
+            // float camZ = -3.0f;
+            cam.updatePosition(opengl::vec3(camX, 0.0f, camZ));
+            view = cam.lookAt();
+            myShader.setMatrix4f("view",view);
+
             glDrawArrays(GL_TRIANGLES, 0, 36);
             // glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 

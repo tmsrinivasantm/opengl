@@ -52,6 +52,20 @@ void matrix4f::make_matrix4f(const float *floats) {
     }
   }
 }
+void matrix4f::make_matrix4f(const vec3 &v1, const vec3 &v2, const vec3 &v3){
+
+    for(int j = 0; j < 3; j++) {
+        values[j][0] = v1[j];
+    }
+    for(int j = 0; j < 3; j++) {
+        values[j][1] = v2[j];
+    }
+    for(int j = 0; j < 3; j++) {
+        values[j][2] = v3[j];
+    }
+
+}
+
 
  void normalize(float vec[3]) {
    float square_sum = (vec[0] * vec[0]) + (vec[1] * vec[1]) + (vec[2] * vec[2]);
@@ -90,20 +104,20 @@ void rotate(matrix4f &mat, float angle, float axis[3]) {
 
 }
 
-void translate(matrix4f &mat, const float vec[3]) {
+void translate(matrix4f &mat, const vec3 &vector) {
 
   matrix4f translation_matrix;
 
   const float values[] = {
-  1.0f, 0.0f, 0.0f, vec[0],
-  0.0f, 1.0f, 0.0f, vec[1],
-  0.0f, 0.0f, 1.0f, vec[2],
+  1.0f, 0.0f, 0.0f, vector[0],
+  0.0f, 1.0f, 0.0f, vector[1],
+  0.0f, 0.0f, 1.0f, vector[2],
   0.0f, 0.0f, 0.0f, 1.0f,
   };
 
   translation_matrix.make_matrix4f(values);
 
-  mat = translation_matrix * mat;
+  mat = mat * translation_matrix;
 }
 
 matrix4f perspective(float fov, float aspect_ratio, float near, float far) {
@@ -124,13 +138,14 @@ matrix4f perspective(float fov, float aspect_ratio, float near, float far) {
     return perspective;
 }
 
-  void matrix4f::transpose() {
-    for(int i = 0; i < 4; i++) {
-      for(int j = i; j < 4; j++) {
-        float temp = values[i][j];
-        values[i][j] = values[j][i];
-        values[j][i] = temp;
-      }
+void matrix4f::transpose() {
+  for(int i = 0; i < 4; i++) {
+    for(int j = i; j < 4; j++) {
+      float temp = values[i][j];
+      values[i][j] = values[j][i];
+      values[j][i] = temp;
     }
   }
+}
+
 } // namespace opengl
