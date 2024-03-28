@@ -137,7 +137,8 @@ int main() {
         myShader.setMatrix4f("model", model);
         myShader.setMatrix4f("view", view);
         myShader.setMatrix4f("projection", projection);
-        opengl::camera cam(opengl::vec3(0.0f, 0.0f, 3.0f));
+        opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);
+        opengl::camera cam(camPosition);
 
         glEnable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window)) {
@@ -153,12 +154,25 @@ int main() {
             opengl::rotate(model, (float)glfwGetTime(), (float[]){0.5f, 1.0f, 0.0f});
             myShader.setMatrix4f("model", model);
 
-            const float radius = 3.0f;
-            float camX = sin(glfwGetTime()) * radius;
-            float camZ = cos(glfwGetTime()) + radius;
+            // const float radius = 3.0f;
+            const float movement = 0.1f;
+            // float camX = sin(glfwGetTime()) * radius;
+            // float camZ = cos(glfwGetTime()) + radius;
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+              camPosition = camPosition - opengl::vec3(0.0f, 0.0f, movement);
+            }
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+              camPosition = camPosition - opengl::vec3(movement, 0.0f, 0.0f);
+            }
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+              camPosition = camPosition + opengl::vec3(0.0f, 0.0f, movement);
+            }
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+              camPosition = camPosition + opengl::vec3(movement, 0.0f, 0.0f);
+            }
             // float camX = ;
             // float camZ = -3.0f;
-            cam.updatePosition(opengl::vec3(camX, 0.0f, camZ));
+            cam.updatePosition(camPosition);
             view = cam.lookAt();
             myShader.setMatrix4f("view",view);
 
@@ -170,9 +184,7 @@ int main() {
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-
     }
-
     glfwTerminate();
     return 0;
 }

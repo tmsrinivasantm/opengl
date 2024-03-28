@@ -44,6 +44,12 @@ vec3 vec3::operator-(const vec3 &vector) {
         result.array[i] = array[i] - vector[i];
     return result;
 }
+vec3 vec3::operator+(const vec3 &vector) {
+    vec3 result;
+    for(int i = 0; i < 3; i++)
+        result.array[i] = array[i] + vector[i];
+    return result;
+}
 vec3 vec3::operator* (const vec3 &vector) {
     vec3 result;
     for(int i = 0; i < 3; i++ ){

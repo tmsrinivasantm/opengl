@@ -21,7 +21,7 @@ camera::camera(const vec3 &camPosition): position(camPosition) {
     up = direction.cross(right);
 }
 camera::camera(const vec3 &camPosition, const vec3 &camTarget): position(camPosition), target(camTarget){
-    vec3 direction = position - camTarget;
+    vec3 direction = position - target;
     direction.normalize();
     vec3 worldUp = vec3(0.0f, 1.0f, 0.0f);
     right = worldUp.cross(direction);

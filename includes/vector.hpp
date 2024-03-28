@@ -10,10 +10,11 @@ public:
     float dot(const vec3 &vec);
     void normalize();
     inline void printvector(){
-        std::cout << "[" << array[0] << array[1] << array[2] << "]" << std::endl;
+        std::cout << "[" << array[0] << ", " << array[1] << ", " << array[2] << "]" << std::endl;
     }
     float operator[] (int index) const;
     vec3 operator-(const vec3 &vector);
+    vec3 operator+(const vec3 &vector);
     vec3 operator* (const vec3 &vector);
     vec3 operator* (float num);
 private:
