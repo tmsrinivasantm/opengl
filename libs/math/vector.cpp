@@ -22,17 +22,19 @@ vec3 vec3::cross(const vec3 &vec) {
 float vec3::dot(const vec3 &vec) {
     return array[0]*vec.array[0] + array[1]*vec.array[1] + array[2]*vec.array[2];
 }
-void vec3::normalize() {
+vec3 vec3::normalize() {
     float sum = 0;
     float square_sum = (array[0] * array[0]) + (array[1] * array[1]) + (array[2] * array[2]);
     if ( square_sum == 1 )
-        return;
+        return *this;
     else{
         square_sum = std::sqrt(square_sum);
         array[0] = array[0]/square_sum;
         array[1] = array[1]/square_sum;
         array[2] = array[2]/square_sum;
     }
+
+    return *this;
 }
 float vec3::operator[] (int index) const {
     return array[index];

@@ -8,7 +8,7 @@ public:
     vec3(float a, float b, float c);
     vec3 cross(const vec3 &vec);
     float dot(const vec3 &vec);
-    void normalize();
+    vec3 normalize();
     inline void printvector(){
         std::cout << "[" << array[0] << ", " << array[1] << ", " << array[2] << "]" << std::endl;
     }

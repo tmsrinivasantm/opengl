@@ -39,13 +39,10 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
         pitch =  89.0f;
     if(pitch < -89.0f)
         pitch = -89.0f;
-    opengl::vec3 travelled = opengl::vec3(
+    camFront = opengl::vec3(
         cos(opengl::degrees_to_radians(yaw)) * cos(opengl::degrees_to_radians(pitch)),
         sin(opengl::degrees_to_radians(pitch)), 
-        sin(opengl::degrees_to_radians(yaw)) * cos(opengl::degrees_to_radians(pitch)));
-    travelled.normalize();
-
-    camFront = travelled;
+        sin(opengl::degrees_to_radians(yaw)) * cos(opengl::degrees_to_radians(pitch))).normalize();
 
     lastX = xpos;
     lastY = ypos;
