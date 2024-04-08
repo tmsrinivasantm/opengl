@@ -8,7 +8,7 @@ public:
     ~array_buffer();
     void bind();
     void unbind();
-    void setData(float data[], int size);
+    void setData(const float data[], int size);
 private:
     unsigned int identifier;
 };

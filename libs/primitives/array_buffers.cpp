@@ -2,7 +2,7 @@
 namespace opengl {
 array_buffer::array_buffer() {
     glGenBuffers(1, &identifier);
-    glBindBuffer(GL_ARRAY_BUFFER, identifier);
+    bind();
 }
 array_buffer::~array_buffer() {
     glDeleteBuffers(1, &identifier);
@@ -10,8 +10,11 @@ array_buffer::~array_buffer() {
 void array_buffer::unbind(){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void array_buffer::setData(float data[], int size){
+void array_buffer::setData(const float data[], int size){
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+}
+void array_buffer::bind() {
+    glBindBuffer(GL_ARRAY_BUFFER, identifier);
 }
 
 } // namespace opengl

@@ -1,3 +1,9 @@
+#include "array_buffers.hpp"
+#include "camera.hpp"
+#include "matrices.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
+#include "vertex_array.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
@@ -5,6 +11,7 @@
 //local includes
 #include <vector.hpp>
 #include <opengl.hpp>
+#include <cube.hpp>
 
 // global vars
 opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);
@@ -96,15 +103,39 @@ int main() {
 //  operations
     {
 
-        while (!glfwWindowShouldClose(window)) {
+        opengl::shader baseShader("../shaders/base_material/vert.shader","../shaders/base_material/frag.shader");
+        
+        opengl::matrix4f projection;
+        opengl::matrix4f view;
 
+        opengl::camera cam(camPosition);
+
+        float prevFrame = 0.0f;
+        float currentFrame = 0.0f;
+        glEnable(GL_DEPTH_TEST);
+        while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             glfwSetCursorPosCallback(window, mouseCallback);
             glfwSetScrollCallback(window, scrollCallback);
 
+            currentFrame = (float)glfwGetTime();
+            float delta = currentFrame - prevFrame;
+            prevFrame = currentFrame;
+
 //          -------------------- Render -------------------
+            baseShader.use();
+            keyboardInputResolve(window, delta * 2.5f);
+
+            projection = opengl::perspective(opengl::degrees_to_radians(fov), 800.0f/600.0f, 0.1f, 100.0f);
+            
+            cam.updatePosition(camPosition);
+            view = cam.lookAt();
+            baseShader.setMatrix4f("projection", projection);
+            baseShader.setMatrix4f("view", view);
+
+            opengl::cube cube(baseShader);
 
 //          -----------------------------------------------
 
