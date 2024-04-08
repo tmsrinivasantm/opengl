@@ -80,10 +80,6 @@ void matrix4f::make_matrix4f(const vec3 &v1, const vec3 &v2, const vec3 &v3){
    }
  }
 
-  float degrees_to_radians(float angle) {
-    return 0.0174533 * angle;
-  }
-
 void rotate(matrix4f &mat, float angle, float axis[3]) {
   matrix4f rotation_transform;
   normalize(axis);
