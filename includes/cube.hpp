@@ -9,6 +9,7 @@ class cube {
 public:
     cube(shader cubeShader);
     inline void draw() { glDrawArrays(GL_TRIANGLES, 0, 36); }
+    void attachShader(const std::string& vertFilePath, const std::string& fragFilePath);
 private:
     array_buffer vbo;
     vertex_array vao;

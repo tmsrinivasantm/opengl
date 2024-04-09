@@ -10,4 +10,9 @@ cube::cube(shader cubeShader): cubeShader(cubeShader) {
     this->cubeShader.setMatrix4f("model", model);
     draw();
 }
+void cube::attachShader(const std::string& vertFilePath, const std::string& fragFilePath) {
+    cubeShader = shader(vertFilePath, fragFilePath);
+    cubeShader.use();
+    cubeShader.setMatrix4f("model", model);
+}
 }
