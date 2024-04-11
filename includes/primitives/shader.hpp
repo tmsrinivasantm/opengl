@@ -1,7 +1,9 @@
 #pragma once
 #include <glad/glad.h>
-#include <matrices.hpp>
+#include <math/matrices.hpp>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 namespace opengl {
 class shader{
 public:

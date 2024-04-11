@@ -1,7 +1,4 @@
-#include "matrices.hpp"
-#include <shader.hpp>
-#include <sstream>
-#include <fstream>
+#include <primitives/shader.hpp>
 std::string readFile(const std::string &filename) {
     std::ifstream file(filename);
     std::string line;

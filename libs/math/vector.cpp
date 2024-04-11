@@ -1,4 +1,4 @@
-#include<vector.hpp>
+#include<math/vector.hpp>
 #include <cmath>
 namespace opengl {
 vec3::vec3(){

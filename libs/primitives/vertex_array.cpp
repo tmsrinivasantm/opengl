@@ -1,5 +1,4 @@
-#include <vertex_array.hpp>
-#include <iostream>
+#include <primitives/vertex_array.hpp>
 
 namespace opengl {
 vertex_array::vertex_array(){

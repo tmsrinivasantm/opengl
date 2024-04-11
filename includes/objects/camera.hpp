@@ -1,7 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
-#include <vector.hpp>
-#include <matrices.hpp>
+#include <math/vector.hpp>
+#include <math/matrices.hpp>
 
 namespace opengl {
 class camera {

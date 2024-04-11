@@ -1,4 +1,4 @@
-#include <camera.hpp>
+#include <objects/camera.hpp>
 
 namespace opengl {
 opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);

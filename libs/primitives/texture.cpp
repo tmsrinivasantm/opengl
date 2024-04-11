@@ -1,4 +1,4 @@
-#include <texture.hpp>
+#include <primitives/texture.hpp>
 
 namespace opengl {
 texture::texture(const std::string &filepath) {

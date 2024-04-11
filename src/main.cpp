@@ -1,17 +1,15 @@
-#include "array_buffers.hpp"
-#include "camera.hpp"
-#include "matrices.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
-#include "vertex_array.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <cmath>
 
 //local includes
-#include <vector.hpp>
+#include <math/vector.hpp>
 #include <opengl.hpp>
-#include <cube.hpp>
+#include <objects/cube.hpp>
+#include <primitives/array_buffers.hpp>
+#include <objects/camera.hpp>
+#include <math/matrices.hpp>
+#include <primitives/shader.hpp>
+#include <primitives/texture.hpp>
 
 // global vars
 
@@ -62,8 +60,6 @@ int main() {
             prevFrame = currentFrame;
 
 //          -------------------- Render -------------------
-            baseShader.use();
-
             projection = opengl::perspective(opengl::degrees_to_radians(45), 800.0f/600.0f, 0.1f, 100.0f);
             
             cam.init(delta);

@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <iostream>
-#include <stb_image.h>
+#include <deps/stb_image.h>
 namespace opengl {
 class texture {
 public:

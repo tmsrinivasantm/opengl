@@ -1,4 +1,4 @@
-#include <array_buffers.hpp>
+#include <primitives/array_buffers.hpp>
 namespace opengl {
 array_buffer::array_buffer() {
     glGenBuffers(1, &identifier);

@@ -1,9 +1,9 @@
 #pragma once
-#include <vertex_array.hpp>
+#include <primitives/vertex_array.hpp>
 #include <glad/glad.h>
-#include <array_buffers.hpp>
-#include <shader.hpp>
-#include <matrices.hpp>
+#include <primitives/array_buffers.hpp>
+#include <primitives/shader.hpp>
+#include <math/matrices.hpp>
 namespace opengl {
 class cube {
 public:

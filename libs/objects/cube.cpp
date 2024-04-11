@@ -1,4 +1,4 @@
-#include <cube.hpp>
+#include <objects/cube.hpp>
 namespace opengl {
 cube::cube(shader cubeShader): cubeShader(cubeShader) {
     vbo.setData(vertices, sizeof(vertices));

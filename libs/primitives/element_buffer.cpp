@@ -1,4 +1,4 @@
-#include <element_buffer.hpp>
+#include <primitives/element_buffer.hpp>
 namespace opengl {
 element_buffer::element_buffer() {
     glGenBuffers(1, &identifier);
