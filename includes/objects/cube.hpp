@@ -8,8 +8,10 @@ namespace opengl {
 class cube {
 public:
     cube(shader cubeShader);
-    inline void draw() { glDrawArrays(GL_TRIANGLES, 0, 36); }
+    void draw();
     void attachShader(const std::string& vertFilePath, const std::string& fragFilePath);
+    void updateModelMatrix(matrix4f& matrix);
+    inline matrix4f getModelMatrix() { return model; } 
 private:
     array_buffer vbo;
     vertex_array vao;

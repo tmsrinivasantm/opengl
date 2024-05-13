@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <math/matrices.hpp>
+#include <math/vector.hpp>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -16,6 +17,7 @@ public:
 
     inline unsigned int getIdentifier() { return identifier; }
     void setMatrix4f(const char *uniformName, matrix4f &matrix);
+    void setVec3(const char *uniforName, const vec3 &vector);
 private:
     unsigned int identifier;
     int vertexShader, fragmentShader;

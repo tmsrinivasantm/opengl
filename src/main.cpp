@@ -11,7 +11,10 @@
 #include <primitives/shader.hpp>
 #include <primitives/texture.hpp>
 
+// imgui includes
+
 // global vars
+opengl::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -37,18 +40,81 @@ int main() {
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
 //  operations
     {
 
+        static constexpr float vertices[] = {
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        };
+        opengl::array_buffer vbo;
+        opengl::vertex_array vao;
+        vbo.bind();
+        vao.bind();
+
+        vbo.setData(vertices, sizeof(vertices));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
         opengl::shader baseShader("../shaders/base_material/vert.shader","../shaders/base_material/frag.shader");
+        opengl::shader lightShader("../shaders/light_source/vert.shader","../shaders/light_source/frag.shader");
+        baseShader.use();
         
         opengl::matrix4f projection;
         opengl::matrix4f view;
+        opengl::matrix4f model;
+        opengl::matrix4f newModel;
 
         opengl::camera cam(window);
+        // opengl::cube baseCube(baseShader);
 
         float prevFrame = 0.0f;
         float currentFrame = 0.0f;
+        baseShader.setVec3("objectColor", opengl::vec3(1.0f, 0.0f, 0.0f));
+        baseShader.setVec3("lightColor", opengl::vec3(1.0f, 1.0f, 1.0f));
+        baseShader.setVec3("lightPos", lightPos);
         glEnable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -66,10 +132,21 @@ int main() {
             cam.focus();
             view = cam.lookAt();
 
-            baseShader.setMatrix4f("projection", projection);
+            // main cube
+            baseShader.use();
+            baseShader.setMatrix4f("model", model);
             baseShader.setMatrix4f("view", view);
+            baseShader.setMatrix4f("projection", projection);
+            glDrawArrays(GL_TRIANGLES, 0, 36); 
 
-            opengl::cube cube(baseShader);
+            // light source
+            newModel.initialize();
+            lightShader.use();
+            opengl::translate(newModel, lightPos);
+            lightShader.setMatrix4f("model", newModel);
+            lightShader.setMatrix4f("view", view);
+            lightShader.setMatrix4f("projection", projection);
+            glDrawArrays(GL_TRIANGLES, 0, 36); 
 
 //          -----------------------------------------------
 
@@ -77,6 +154,7 @@ int main() {
             glfwPollEvents();
         }
     }
+
     glfwTerminate();
     return 0;
 }

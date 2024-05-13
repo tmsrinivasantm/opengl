@@ -8,6 +8,7 @@ add_executable(opengl ${helloworld_SRC})
 target_link_libraries(opengl glfw dl pthread X11  Xrandr Xi)
 
 include_directories(opengl PRIVATE includes)
+include_directories(opengl PRIVATE includes/deps)
 
 # glad
 add_subdirectory(libs/deps)
