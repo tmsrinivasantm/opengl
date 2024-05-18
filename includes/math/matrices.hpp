@@ -28,6 +28,7 @@ class matrix4f {
 float degrees_to_radians(float angle);
 void rotate(matrix4f &mat, float angle, float axis[3]);
 void translate(matrix4f &mat, const vec3 &vector);
+void scale(matrix4f &mat, const vec3 &vector);
 matrix4f perspective(float fov, float aspect_ratio, float near, float far);
 void normalize(float vec[3]);
 } // namespace opengl

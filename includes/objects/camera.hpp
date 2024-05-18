@@ -17,6 +17,7 @@ public:
     inline void setCamSpeed(float camSpeed) { this->camSpeed = camSpeed; }
     inline void focus() { isFocused = true; }
     inline void unfocus() { isFocused = false; }
+    inline vec3 getPosition() { return position; }
 private:
     GLFWwindow* window;
     bool isFocused = false;

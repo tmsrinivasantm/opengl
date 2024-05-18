@@ -14,7 +14,7 @@
 // imgui includes
 
 // global vars
-opengl::vec3 lightPos(1.2f, 1.0f, 2.0f);
+opengl::vec3 lightPos(0.0f, 0.0f, 1.0f);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -114,8 +114,9 @@ int main() {
         float currentFrame = 0.0f;
         baseShader.setVec3("objectColor", opengl::vec3(1.0f, 0.0f, 0.0f));
         baseShader.setVec3("lightColor", opengl::vec3(1.0f, 1.0f, 1.0f));
-        baseShader.setVec3("lightPos", lightPos);
         glEnable(GL_DEPTH_TEST);
+        opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
+        opengl::translate(newModel, lightPos);
         while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -137,12 +138,16 @@ int main() {
             baseShader.setMatrix4f("model", model);
             baseShader.setMatrix4f("view", view);
             baseShader.setMatrix4f("projection", projection);
+            baseShader.setVec3("lookPos", cam.getPosition());
+            baseShader.setVec3("lightPos", lightPos);
             glDrawArrays(GL_TRIANGLES, 0, 36); 
 
             // light source
-            newModel.initialize();
+            opengl::vec3 translator((delta * sin(currentFrame)), 0.0f, 0.0f);
+            lightPos = lightPos + translator;
+            opengl::translate(newModel, translator);
+            newModel.print_matrix();
             lightShader.use();
-            opengl::translate(newModel, lightPos);
             lightShader.setMatrix4f("model", newModel);
             lightShader.setMatrix4f("view", view);
             lightShader.setMatrix4f("projection", projection);

@@ -116,6 +116,18 @@ void translate(matrix4f &mat, const vec3 &vector) {
   mat = mat * translation_matrix;
 }
 
+void scale(matrix4f &mat, const vec3 &vector) {
+    matrix4f scaleMatrix;
+    const float values[] = {
+        vector[0], 0.0f, 0.0f, 0.0f,
+        0.0f, vector[1], 0.0f, 0.0f,
+        0.0f, 0.0f, vector[2], 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+    scaleMatrix.make_matrix4f(values);
+    mat = mat * scaleMatrix;
+}
+
 matrix4f perspective(float fov, float aspect_ratio, float near, float far) {
     matrix4f perspective;
 
