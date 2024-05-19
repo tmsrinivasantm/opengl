@@ -14,7 +14,7 @@
 // imgui includes
 
 // global vars
-opengl::vec3 lightPos(0.0f, 0.0f, 1.0f);
+opengl::vec3 lightPos(-2.0f, 0.0f, 0.0f);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -143,10 +143,10 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36); 
 
             // light source
-            opengl::vec3 translator((delta * sin(currentFrame)), 0.0f, 0.0f);
+            float radius = 2.0f;
+            opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));
             lightPos = lightPos + translator;
             opengl::translate(newModel, translator);
-            newModel.print_matrix();
             lightShader.use();
             lightShader.setMatrix4f("model", newModel);
             lightShader.setMatrix4f("view", view);
