@@ -33,8 +33,7 @@ int main() {
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-
-        return -1;
+return -1;
     }
     glfwMakeContextCurrent(window);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -117,10 +116,22 @@ int main() {
         float prevFrame = 0.0f;
         float currentFrame = 0.0f;
         baseShader.setVec3("objectColor", opengl::vec3(1.0f, 0.0f, 0.0f));
-        baseShader.setVec3("lightColor", opengl::vec3(1.0f, 1.0f, 1.0f));
         glEnable(GL_DEPTH_TEST);
         opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
         opengl::translate(newModel, lightPos);
+        opengl::Material gold = {
+            .ambient = opengl::vec3(0.3, 0.2, 0.745),
+            .diffuse = opengl::vec3(0.75, 0.60648, 0.22648),
+            .specular = opengl::vec3(0.7, 0.556, 0.366),
+            // .specular = opengl::vec3(0.7, 0.7, 0.7),
+            .shininess = 32.0f
+        };
+        opengl::Light default_light = {
+            .ambient = opengl::vec3(0.8, 0.8, 0.8),
+            .diffuse = opengl::vec3(1.0, 1.0, 1.0),
+            .specular = opengl::vec3(1.0, 1.0, 1.0),
+            .position = opengl::vec3(-2.0, 0.0, 0.0),
+        };
         while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,13 +153,15 @@ int main() {
             baseShader.setMatrix4f("view", view_glm);
             baseShader.setMatrix4f("projection", projection);
             baseShader.setVec3("lookPos", cam.getPosition());
-            baseShader.setVec3("lightPos", lightPos);
+            baseShader.setMaterial("material", gold);
+            baseShader.setLight("default_light", default_light);
+            baseShader.setVec3("lightColour", opengl::vec3(1.0f, 1.0f, 1.0f));
             glDrawArrays(GL_TRIANGLES, 0, 36); 
 
             // light source
             float radius = 2.0f;
             opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));
-            lightPos = lightPos + translator;
+            default_light.position = default_light.position + translator;
             opengl::translate(newModel, translator);
             lightShader.use();
             lightShader.setMatrix4f("model", newModel);

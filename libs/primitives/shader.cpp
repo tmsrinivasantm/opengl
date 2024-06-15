@@ -1,3 +1,4 @@
+#include <cstring>
 #include <primitives/shader.hpp>
 #include <iostream>
 #include <sstream>
@@ -18,9 +19,7 @@ int compileShader(unsigned int shaderType, const std::string &filename) {
     std::string shaderString;
     char infolog[512];
     int shader, success;
-    shaderString = readFile(filename);
-    shaderSource = shaderString.c_str();
-    shader = glCreateShader(shaderType);
+    shaderString = readFile(filename); shaderSource = shaderString.c_str(); shader = glCreateShader(shaderType);
     glShaderSource(shader, 1, &shaderSource,NULL);
     glCompileShader(shader);
 
@@ -58,18 +57,34 @@ void shader::setFragShader(const std::string &fragFilepath) {
     fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragFilepath);
     glAttachShader(identifier, fragmentShader);
 }
-void shader::setMatrix4f(const char *uniformName, matrix4f &matrix) {
-    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName), 1, GL_FALSE, matrix.getValue());
+void shader::setMatrix4f(const std::string &uniformName, matrix4f &matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName.c_str()), 1, GL_FALSE, matrix.getValue());
 }
-void shader::setMatrix4f(const char *uniformName, glm::mat4 &matrix) {
-    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
+void shader::setMatrix4f(const std::string &uniformName, glm::mat4 &matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
-void shader::setVec3(const char *uniforName, const vec3 &vector) {
-    glUniform3f(glGetUniformLocation(identifier, uniforName), vector[0], vector[1], vector[2]);
+void shader::setVec3(const std::string &uniformName, const vec3 &vector) {
+    glUniform3f(glGetUniformLocation(identifier, uniformName.c_str()), vector[0], vector[1], vector[2]);
 }
-void shader::setVec3(const char *uniforName, glm::vec3 &vector) {
-    glUniform3f(glGetUniformLocation(identifier, uniforName), vector[0], vector[1], vector[2]);
+void shader::setVec3(const std::string &uniformName, glm::vec3 &vector) {
+    glUniform3f(glGetUniformLocation(identifier, uniformName.c_str()), vector[0], vector[1], vector[2]);
 }
+void shader::setFloat(const std::string &uniformName, float num) {
+    glUniform1f(glGetUniformLocation(identifier, uniformName.c_str()), num);
+}
+void shader::setMaterial(const std::string &uniformName, Material material) {
+    setVec3((uniformName + ".ambient"), material.ambient);
+    setVec3((uniformName + ".diffuse"), material.diffuse);
+    setVec3((uniformName + ".specular"), material.specular);
+    setFloat((uniformName + ".shininess"), material.shininess);
+}
+void shader::setLight(const std::string &uniformName, Light light) {
+    setVec3((uniformName + ".ambient"), light.ambient);
+    setVec3((uniformName + ".diffuse"), light.diffuse);
+    setVec3((uniformName + ".specular"), light.specular);
+    setVec3((uniformName + ".position"), light.position);
+}
+
 
 
 shader::~shader() {
