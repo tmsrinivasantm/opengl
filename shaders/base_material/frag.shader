@@ -1,4 +1,5 @@
 #version 330 core
+
 out vec4 FragColor;
 
 in vec3 Normal;
@@ -8,6 +9,7 @@ uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform vec3 lookPos;
+
 void main()
 {
     // calculate ambient lighting
@@ -23,8 +25,8 @@ void main()
     // calculate specular lighting
     float specularStrength = 0.5;
     vec3 lookDir = normalize(lookPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(lookDir, reflectDir), 0.0), 32);
+    vec3 reflectDir = normalize(reflect(-lightDir, norm));
+    float spec = pow(max(dot(lookDir, reflectDir), 0.0), 32.0);
     vec3 specular = specularStrength * spec * lightColor;
 
     // calculate final lighting

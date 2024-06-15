@@ -1,4 +1,8 @@
 #include <primitives/shader.hpp>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 std::string readFile(const std::string &filename) {
     std::ifstream file(filename);
     std::string line;
@@ -57,9 +61,16 @@ void shader::setFragShader(const std::string &fragFilepath) {
 void shader::setMatrix4f(const char *uniformName, matrix4f &matrix) {
     glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName), 1, GL_FALSE, matrix.getValue());
 }
+void shader::setMatrix4f(const char *uniformName, glm::mat4 &matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
+}
 void shader::setVec3(const char *uniforName, const vec3 &vector) {
     glUniform3f(glGetUniformLocation(identifier, uniforName), vector[0], vector[1], vector[2]);
 }
+void shader::setVec3(const char *uniforName, glm::vec3 &vector) {
+    glUniform3f(glGetUniformLocation(identifier, uniforName), vector[0], vector[1], vector[2]);
+}
+
 
 shader::~shader() {
     glDeleteShader(vertexShader);

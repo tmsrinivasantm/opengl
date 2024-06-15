@@ -11,6 +11,9 @@
 #include <primitives/shader.hpp>
 #include <primitives/texture.hpp>
 
+//glm
+#include <glm/matrix.hpp>
+
 // imgui includes
 
 // global vars
@@ -104,6 +107,7 @@ int main() {
         
         opengl::matrix4f projection;
         opengl::matrix4f view;
+        glm::mat4 view_glm;
         opengl::matrix4f model;
         opengl::matrix4f newModel;
 
@@ -127,16 +131,15 @@ int main() {
             prevFrame = currentFrame;
 
 //          -------------------- Render -------------------
-            projection = opengl::perspective(opengl::degrees_to_radians(45), 800.0f/600.0f, 0.1f, 100.0f);
+            projection = opengl::perspective(opengl::degrees_to_radians(cam.getFOV()), 800.0f/600.0f, 0.1f, 100.0f);
             
             cam.init(delta);
             cam.focus();
-            view = cam.lookAt();
+            view_glm = cam.lookAt_glm();
 
-            // main cube
             baseShader.use();
             baseShader.setMatrix4f("model", model);
-            baseShader.setMatrix4f("view", view);
+            baseShader.setMatrix4f("view", view_glm);
             baseShader.setMatrix4f("projection", projection);
             baseShader.setVec3("lookPos", cam.getPosition());
             baseShader.setVec3("lightPos", lightPos);
@@ -149,7 +152,7 @@ int main() {
             opengl::translate(newModel, translator);
             lightShader.use();
             lightShader.setMatrix4f("model", newModel);
-            lightShader.setMatrix4f("view", view);
+            lightShader.setMatrix4f("view", view_glm);
             lightShader.setMatrix4f("projection", projection);
             glDrawArrays(GL_TRIANGLES, 0, 36); 
 
