@@ -72,10 +72,12 @@ void shader::setVec3(const std::string &uniformName, glm::vec3 &vector) {
 void shader::setFloat(const std::string &uniformName, float num) {
     glUniform1f(glGetUniformLocation(identifier, uniformName.c_str()), num);
 }
+void shader::setInt(const std::string &uniformName, int num) {
+    glUniform1i(glGetUniformLocation(identifier, uniformName.c_str()), num);
+}
 void shader::setMaterial(const std::string &uniformName, Material material) {
-    setVec3((uniformName + ".ambient"), material.ambient);
-    setVec3((uniformName + ".diffuse"), material.diffuse);
-    setVec3((uniformName + ".specular"), material.specular);
+    setInt((uniformName + ".diffuse"), material.diffuse);
+    setInt((uniformName + ".specular"), material.specular);
     setFloat((uniformName + ".shininess"), material.shininess);
 }
 void shader::setLight(const std::string &uniformName, Light light) {

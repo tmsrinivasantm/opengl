@@ -10,6 +10,7 @@ public:
     void bind();
     void unbind();
     void generate(const std::string &filepath);
+    unsigned int getIdentifier() { return identifier; }
 private:
     unsigned int identifier;
     unsigned char *image_data;

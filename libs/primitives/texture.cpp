@@ -22,8 +22,15 @@ void texture::generate(const std::string &filepath) {
     int width, height, nrchannels;
 
     image_data = stbi_load(filepath.c_str(), &width, &height, &nrchannels, 0);
+    GLenum format;
+    if (nrchannels == 1)
+        format = GL_RED;
+    else if (nrchannels == 3)
+        format = GL_RGB;
+    else if (nrchannels == 4)
+        format = GL_RGBA;
     if (image_data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format,
                      GL_UNSIGNED_BYTE, image_data);
     } else
         std::cout << "FAILED TO LOAD IMAGE " << filepath << std::endl;

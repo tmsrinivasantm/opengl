@@ -3,9 +3,8 @@
 namespace opengl {
 inline float degrees_to_radians(float angle) { return 0.0174533 * angle; }
 struct Material {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    int diffuse;
+    int specular;
     float shininess;
 };
 struct Light {

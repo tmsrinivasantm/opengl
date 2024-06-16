@@ -22,6 +22,7 @@ public:
     void setVec3(const std::string &uniformName, glm::vec3 &vector);
     void setMaterial(const std::string &uniformName, Material material);
     void setFloat(const std::string &uniformName, float num);
+    void setInt(const std::string &uniformName, int num);
     void setLight(const std::string &uniformName, Light light);
 private:
     unsigned int identifier;

@@ -10,7 +10,6 @@
 #include <math/matrices.hpp>
 #include <primitives/shader.hpp>
 #include <primitives/texture.hpp>
-
 //glm
 #include <glm/matrix.hpp>
 
@@ -33,7 +32,7 @@ int main() {
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-return -1;
+        return -1;
     }
     glfwMakeContextCurrent(window);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -47,47 +46,47 @@ return -1;
     {
 
         static constexpr float vertices[] = {
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
         };
         opengl::array_buffer vbo;
         opengl::vertex_array vao;
@@ -95,10 +94,12 @@ return -1;
         vao.bind();
 
         vbo.setData(vertices, sizeof(vertices));
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
 
         opengl::shader baseShader("../shaders/base_material/vert.shader","../shaders/base_material/frag.shader");
         opengl::shader lightShader("../shaders/light_source/vert.shader","../shaders/light_source/frag.shader");
@@ -111,25 +112,33 @@ return -1;
         opengl::matrix4f newModel;
 
         opengl::camera cam(window);
-        // opengl::cube baseCube(baseShader);
+
+        opengl::texture cat("../src/textures/cat_minimal.jpg");
+        opengl::texture cat_spec("../src/textures/cat_minimal_specular.jpg");
 
         float prevFrame = 0.0f;
         float currentFrame = 0.0f;
-        baseShader.setVec3("objectColor", opengl::vec3(1.0f, 0.0f, 0.0f));
         glEnable(GL_DEPTH_TEST);
         opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
         opengl::translate(newModel, lightPos);
-        opengl::Material gold = {
-            .ambient = opengl::vec3(0.3, 0.2, 0.745),
-            .diffuse = opengl::vec3(0.75, 0.60648, 0.22648),
-            .specular = opengl::vec3(0.7, 0.556, 0.366),
-            // .specular = opengl::vec3(0.7, 0.7, 0.7),
+        // opengl::Material gold = {
+        //     // .ambient = opengl::vec3(0.75, 0.60648, 0.22648), // material's ambient and diffuse should be the same
+        //     .ambient = opengl::vec3(0.75, 0.60648, 0.22648), // material's ambient and diffuse should be the same
+        //     .diffuse = opengl::vec3(0.75, 0.60648, 0.22648),
+        //     .specular = opengl::vec3(0.7, 0.556, 0.366),
+        //     // .specular = opengl::vec3(0.7, 0.7, 0.7),
+        //     .shininess = 32.0f
+        // };
+        opengl::Material cat_material = {
+            .diffuse = 0,
+            .specular = 1,
             .shininess = 32.0f
         };
+
         opengl::Light default_light = {
             .ambient = opengl::vec3(0.8, 0.8, 0.8),
             .diffuse = opengl::vec3(1.0, 1.0, 1.0),
-            .specular = opengl::vec3(1.0, 1.0, 1.0),
+            .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
             .position = opengl::vec3(-2.0, 0.0, 0.0),
         };
         while (!glfwWindowShouldClose(window)) {
@@ -147,13 +156,17 @@ return -1;
             cam.init(delta);
             cam.focus();
             view_glm = cam.lookAt_glm();
+            glActiveTexture(GL_TEXTURE0);
+            cat.bind();
+            glActiveTexture(GL_TEXTURE1);
+            cat_spec.bind();
 
             baseShader.use();
             baseShader.setMatrix4f("model", model);
             baseShader.setMatrix4f("view", view_glm);
             baseShader.setMatrix4f("projection", projection);
             baseShader.setVec3("lookPos", cam.getPosition());
-            baseShader.setMaterial("material", gold);
+            baseShader.setMaterial("material", cat_material);
             baseShader.setLight("default_light", default_light);
             baseShader.setVec3("lightColour", opengl::vec3(1.0f, 1.0f, 1.0f));
             glDrawArrays(GL_TRIANGLES, 0, 36); 
