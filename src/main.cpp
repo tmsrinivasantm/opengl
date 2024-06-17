@@ -16,7 +16,6 @@
 // imgui includes
 
 // global vars
-opengl::vec3 lightPos(-2.0f, 0.0f, 0.0f);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -119,8 +118,6 @@ int main() {
         float prevFrame = 0.0f;
         float currentFrame = 0.0f;
         glEnable(GL_DEPTH_TEST);
-        opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
-        opengl::translate(newModel, lightPos);
         // opengl::Material gold = {
         //     // .ambient = opengl::vec3(0.75, 0.60648, 0.22648), // material's ambient and diffuse should be the same
         //     .ambient = opengl::vec3(0.75, 0.60648, 0.22648), // material's ambient and diffuse should be the same
@@ -141,6 +138,8 @@ int main() {
             .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
             .position = opengl::vec3(-2.0, 0.0, 0.0),
         };
+        opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
+        opengl::translate(newModel, default_light.position);
         while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
