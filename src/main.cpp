@@ -154,7 +154,8 @@ int main() {
             .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
             .position = opengl::vec3(0.0, 0.0, -8.0),
             .direction = opengl::vec3(0.0, 0.0, 1.0),
-            .cutoff = std::cos(opengl::degrees_to_radians(12.5)),
+            .outerCutoff = std::cos (opengl::degrees_to_radians(20)),
+            .innerCutoff = std::cos(opengl::degrees_to_radians(12.5)),
             .constant = 1.0f,
             .linear = 0.09f,
             .quadratic = 0.032f,
@@ -213,7 +214,11 @@ int main() {
                 glDrawArrays(GL_TRIANGLES, 0, 36); 
             }
 
-            if(default_light.type == opengl::POINT || default_light.type == opengl::SPOT){
+            if (default_light.type == opengl::SPOT) { // only for flashlight effect. Otherwise pair it with the light source cube
+                    default_light.position = cam.getPosition();
+                    default_light.direction = cam.getTarget();
+            }
+            if(default_light.type == opengl::POINT) {
                 // light source
                 // float radius = 20.0f;
                 // opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));

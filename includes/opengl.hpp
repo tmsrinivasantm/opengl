@@ -18,7 +18,8 @@ struct Light {
     vec3 specular;
     vec3 position;
     vec3 direction;
-    float cutoff;
+    float outerCutoff;
+    float innerCutoff;
     float constant;
     float linear;
     float quadratic;

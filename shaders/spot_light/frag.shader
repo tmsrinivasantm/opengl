@@ -17,7 +17,8 @@ struct Light {
     vec3 diffuse;
     vec3 position;
     vec3 direction;
-    float cutoff;
+    float outerCutoff;
+    float innerCutoff;
 };
 uniform vec3 lookPos;
 uniform Material material;
@@ -32,23 +33,22 @@ void main()
 
     // cone stuff
     float cosangle = dot(normalize(default_light.position - FragPos), lightDir);
-    int test = 0;
-    if(cosangle >= default_light.cutoff)
-        test = 1;
+    float cutoffDiff = default_light.innerCutoff - default_light.outerCutoff;
+    float intensity = clamp((cosangle - default_light.outerCutoff)/cutoffDiff, 0.0, 1.0);
 
     // calculate diffuse lighting
     vec3 norm = normalize(Normal);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = default_light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)) * test;
+    vec3 diffuse = default_light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     
     // calculate specular lighting
     vec3 lookDir = normalize(lookPos - FragPos);
     vec3 reflectDir = normalize(reflect(-lightDir, norm));
     float spec = pow(max(dot(lookDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = default_light.specular * texture(material.specular,TexCoords).rgb * spec * test;
+    vec3 specular = default_light.specular * texture(material.specular,TexCoords).rgb * spec;
     
 
     // calculate final lighting
-    vec3 result = ambient + diffuse + specular;
+    vec3 result = ambient + (diffuse + specular) * intensity;
     FragColor = vec4(result,1.0);
 }

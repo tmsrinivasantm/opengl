@@ -95,7 +95,8 @@ void shader::setLight(const std::string &uniformName, Light light) {
     else {
         setVec3((uniformName + ".position"), light.position);
         setVec3((uniformName + ".direction"), light.direction);
-        setFloat((uniformName + ".cutoff"), light.cutoff);
+        setFloat((uniformName + ".outerCutoff"), light.outerCutoff);
+        setFloat((uniformName + ".innerCutoff"), light.innerCutoff);
     }
 }
 shader::~shader() {
