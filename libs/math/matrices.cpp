@@ -80,40 +80,40 @@ void matrix4f::make_matrix4f(const vec3 &v1, const vec3 &v2, const vec3 &v3){
    }
  }
 
-void rotate(matrix4f &mat, float angle, float axis[3]) {
-  matrix4f rotation_transform;
-  normalize(axis);
-  float sin = std::sin(angle);
-  float cos = std::cos(angle);
+void rotate(matrix4f &mat, float angle, vec3 axis) {
+    matrix4f rotation_transform;
+    axis.normalize();
+    float sin = std::sin(angle);
+    float cos = std::cos(angle);
 
-  // rotation computation below
-  const float values[] {
-  cos  + (axis[0]*axis[0] * (1-cos)),(axis[0] * axis[1] * (1 - cos) - axis[2]*sin), axis[0] * axis[2] * (1 - cos) + (axis[1] * sin),0.0f,
-  axis[1] * axis[0] * (1-cos) + (axis[2] * sin), cos + (axis[1] * axis[1] * (1 - cos)), axis[1] * axis[2] * ( 1 - cos ) - (axis[0] * sin), 0.0f,
-  (axis[2] * axis[0] * ( 1-cos )) - (axis[1] * sin) , (axis[2] * axis[1] * ( 1 - cos )) + (axis[0] * sin), cos + (axis[2] * axis[2] * ( 1 - cos )), 0.0f,
-  0.0f, 0.0f, 0.0f, 1.0f
-  };
+    // rotation computation below
+    const float values[] {
+    cos  + (axis[0]*axis[0] * (1-cos)),(axis[0] * axis[1] * (1 - cos) - axis[2]*sin), axis[0] * axis[2] * (1 - cos) + (axis[1] * sin),0.0f,
+    axis[1] * axis[0] * (1-cos) + (axis[2] * sin), cos + (axis[1] * axis[1] * (1 - cos)), axis[1] * axis[2] * ( 1 - cos ) - (axis[0] * sin), 0.0f,
+    (axis[2] * axis[0] * ( 1-cos )) - (axis[1] * sin) , (axis[2] * axis[1] * ( 1 - cos )) + (axis[0] * sin), cos + (axis[2] * axis[2] * ( 1 - cos )), 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f
+    };
 
-  rotation_transform.make_matrix4f(values);
+    rotation_transform.make_matrix4f(values);
 
-  mat = rotation_transform * mat;
+    mat = rotation_transform * mat;
 
 }
 
 void translate(matrix4f &mat, const vec3 &vector) {
 
-  matrix4f translation_matrix;
+    matrix4f translation_matrix;
 
-  const float values[] = {
-  1.0f, 0.0f, 0.0f, vector[0],
-  0.0f, 1.0f, 0.0f, vector[1],
-  0.0f, 0.0f, 1.0f, vector[2],
-  0.0f, 0.0f, 0.0f, 1.0f,
-  };
+    const float values[] = {
+    1.0f, 0.0f, 0.0f, vector[0],
+    0.0f, 1.0f, 0.0f, vector[1],
+    0.0f, 0.0f, 1.0f, vector[2],
+    0.0f, 0.0f, 0.0f, 1.0f,
+    };
 
-  translation_matrix.make_matrix4f(values);
+    translation_matrix.make_matrix4f(values);
 
-  mat = mat * translation_matrix;
+    mat = mat * translation_matrix;
 }
 
 void scale(matrix4f &mat, const vec3 &vector) {

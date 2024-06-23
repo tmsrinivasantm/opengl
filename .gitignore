@@ -44,3 +44,4 @@ _deps
 **/build/**
 .cache
 src/textures/*
+**/make_shader_file.sh

@@ -11,65 +11,42 @@ struct Material {
     sampler2D specular;
     float shininess;
 };
-
-struct Directional_Light {
-    vec3 ambient;
-    vec3 specular;
-    vec3 diffuse;
-    vec3 direction;
-};
-struct Point_Light {
-    vec3 ambient;
-    vec3 specular;
-    vec3 diffuse;
-    vec3 position;
-    float constant;
-    float linear;
-    float quadratic;
-};
-struct Spot_Light {
-    vec3 ambient;
-    vec3 specular;
-    vec3 diffuse;
-    vec3 position;
-    vec3 direction;
-    vec3 cutoff;
-};
 struct Light {
     vec3 ambient;
-    vec3 diffuse;
     vec3 specular;
+    vec3 diffuse;
     vec3 position;
     vec3 direction;
     float cutoff;
-    float constant;
-    float linear;
-    float quadratic;
-    int type;
 };
 uniform vec3 lookPos;
 uniform Material material;
-uniform Directional_Light default_light;
-uniform vec3 lightColour;
+uniform Light default_light;
 
 void main()
 {
     // calculate ambient lighting
     float ambientStrength = 0.1;
     vec3 ambient = ambientStrength * vec3(texture(material.diffuse, TexCoords));
+    vec3 lightDir = normalize(-default_light.direction);
+
+    // cone stuff
+    float angle = dot(normalize(default_light.position - FragPos), lightDir);
+    int test = 0;
+    if(angle <= default_light.cutoff)
+        test = 1;
 
     // calculate diffuse lighting
     vec3 norm = normalize(Normal);
-    // vec3 lightDir = normalize(default_light.position - FragPos);
-    vec3 lightDir = normalize(-default_light.direction);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = default_light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+    float diff = max(dot(norm, -lightDir), 0.0);
+    vec3 diffuse = default_light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)) * test;
     
     // calculate specular lighting
     vec3 lookDir = normalize(lookPos - FragPos);
     vec3 reflectDir = normalize(reflect(-lightDir, norm));
     float spec = pow(max(dot(lookDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = default_light.specular * texture(material.specular,TexCoords).rgb * spec;
+    vec3 specular = default_light.specular * texture(material.specular,TexCoords).rgb * spec * test;
+    
 
     // calculate final lighting
     vec3 result = ambient + diffuse + specular;

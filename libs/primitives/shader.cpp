@@ -84,11 +84,20 @@ void shader::setLight(const std::string &uniformName, Light light) {
     setVec3((uniformName + ".ambient"), light.ambient);
     setVec3((uniformName + ".diffuse"), light.diffuse);
     setVec3((uniformName + ".specular"), light.specular);
-    setVec3((uniformName + ".position"), light.position);
+    if (light.type == DIRECTIONAL)
+        setVec3((uniformName + ".direction"), light.direction);
+    else if (light.type == POINT){
+        setVec3((uniformName + ".position"), light.position);
+        setFloat((uniformName + ".constant"), light.constant);
+        setFloat((uniformName + ".linear"), light.linear);
+        setFloat((uniformName + ".quadratic"), light.quadratic);
+    }
+    else {
+        setVec3((uniformName + ".position"), light.position);
+        setVec3((uniformName + ".direction"), light.direction);
+        setFloat((uniformName + ".cutoff"), light.cutoff);
+    }
 }
-
-
-
 shader::~shader() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);

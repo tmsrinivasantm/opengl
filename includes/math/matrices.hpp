@@ -26,7 +26,7 @@ class matrix4f {
     float &m41 = values[3][0], &m42 = values[3][1], &m43 = values[3][2],&m44 = values[3][3];
 };
 float degrees_to_radians(float angle);
-void rotate(matrix4f &mat, float angle, float axis[3]);
+void rotate(matrix4f &mat, float angle, vec3 axis);
 void translate(matrix4f &mat, const vec3 &vector);
 void scale(matrix4f &mat, const vec3 &vector);
 matrix4f perspective(float fov, float aspect_ratio, float near, float far);

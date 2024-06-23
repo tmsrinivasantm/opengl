@@ -11,46 +11,15 @@ struct Material {
     sampler2D specular;
     float shininess;
 };
-
-struct Directional_Light {
-    vec3 ambient;
-    vec3 specular;
-    vec3 diffuse;
-    vec3 direction;
-};
-struct Point_Light {
-    vec3 ambient;
-    vec3 specular;
-    vec3 diffuse;
-    vec3 position;
-    float constant;
-    float linear;
-    float quadratic;
-};
-struct Spot_Light {
-    vec3 ambient;
-    vec3 specular;
-    vec3 diffuse;
-    vec3 position;
-    vec3 direction;
-    vec3 cutoff;
-};
 struct Light {
     vec3 ambient;
-    vec3 diffuse;
     vec3 specular;
-    vec3 position;
+    vec3 diffuse;
     vec3 direction;
-    float cutoff;
-    float constant;
-    float linear;
-    float quadratic;
-    int type;
 };
 uniform vec3 lookPos;
 uniform Material material;
-uniform Directional_Light default_light;
-uniform vec3 lightColour;
+uniform Light default_light;
 
 void main()
 {

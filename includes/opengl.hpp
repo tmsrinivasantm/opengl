@@ -7,10 +7,21 @@ struct Material {
     int specular;
     float shininess;
 };
+enum Light_Type {
+    DIRECTIONAL = 0,
+    POINT = 1,
+    SPOT = 2
+};
 struct Light {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
     vec3 position;
+    vec3 direction;
+    float cutoff;
+    float constant;
+    float linear;
+    float quadratic;
+    int type;
 };
 } // namespace opengl

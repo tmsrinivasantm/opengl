@@ -45,7 +45,7 @@ int main() {
     {
 
         static constexpr float vertices[] = {
-            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
@@ -87,6 +87,18 @@ int main() {
             -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
             -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
         };
+        opengl::vec3 cubePositions[] = {
+            opengl::vec3( 0.0f,  0.0f,  0.0f),
+            opengl::vec3( 2.0f,  5.0f, -15.0f),
+            opengl::vec3(-1.5f, -2.2f, -2.5f),
+            opengl::vec3(-3.8f, -2.0f, -12.3f),
+            opengl::vec3( 2.4f, -0.4f, -3.5f),
+            opengl::vec3(-1.7f,  3.0f, -7.5f),
+            opengl::vec3( 1.3f, -2.0f, -2.5f),
+            opengl::vec3( 1.5f,  2.0f, -2.5f),
+            opengl::vec3( 1.5f,  0.2f, -1.5f),
+            opengl::vec3(-1.3f,  1.0f, -1.5f)
+        };
         opengl::array_buffer vbo;
         opengl::vertex_array vao;
         vbo.bind();
@@ -101,8 +113,10 @@ int main() {
         glEnableVertexAttribArray(2);
 
         opengl::shader baseShader("../shaders/base_material/vert.shader","../shaders/base_material/frag.shader");
-        opengl::shader lightShader("../shaders/light_source/vert.shader","../shaders/light_source/frag.shader");
-        baseShader.use();
+        opengl::shader lightSourceShader("../shaders/light_source/vert.shader","../shaders/light_source/frag.shader");
+        opengl::shader directionlLightShader("../shaders/directional_light/vert.shader", "../shaders/directional_light/frag.shader");
+        opengl::shader pointLightShader("../shaders/point_light/vert.shader", "../shaders/point_light/frag.shader");
+        opengl::shader spotlLightShader("../shaders/spot_light/vert.shader", "../shaders/spot_light/frag.shader");
         
         opengl::matrix4f projection;
         opengl::matrix4f view;
@@ -131,14 +145,27 @@ int main() {
             .specular = 1,
             .shininess = 32.0f
         };
-
         opengl::Light default_light = {
             .ambient = opengl::vec3(0.8, 0.8, 0.8),
             .diffuse = opengl::vec3(1.0, 1.0, 1.0),
             .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
-            .position = opengl::vec3(-2.0, 0.0, 0.0),
+            .position = opengl::vec3(0.0, 0.0, -8.0),
+            .direction = opengl::vec3(0.0, 0.0, 1.0),
+            .cutoff = std::cos(opengl::degrees_to_radians(45)),
+            .constant = 1.0f,
+            .linear = 0.09f,
+            .quadratic = 0.032f,
+            .type = opengl::POINT
         };
         opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
+        opengl::vec3 translator(0.0f, 0.0f, 0.0f);
+        opengl::shader currentLightShader = baseShader;
+        if( default_light.type == opengl::DIRECTIONAL)
+            currentLightShader = directionlLightShader;
+        else if( default_light.type == opengl::POINT)
+            currentLightShader = pointLightShader;
+        else if( default_light.type == opengl::SPOT)
+            currentLightShader = spotlLightShader;
         opengl::translate(newModel, default_light.position);
         while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -160,26 +187,37 @@ int main() {
             glActiveTexture(GL_TEXTURE1);
             cat_spec.bind();
 
-            baseShader.use();
-            baseShader.setMatrix4f("model", model);
-            baseShader.setMatrix4f("view", view_glm);
-            baseShader.setMatrix4f("projection", projection);
-            baseShader.setVec3("lookPos", cam.getPosition());
-            baseShader.setMaterial("material", cat_material);
-            baseShader.setLight("default_light", default_light);
-            baseShader.setVec3("lightColour", opengl::vec3(1.0f, 1.0f, 1.0f));
+            currentLightShader.use();
+            currentLightShader.setMatrix4f("model", model);
+            currentLightShader.setMatrix4f("view", view_glm);
+            currentLightShader.setMatrix4f("projection", projection);
+
+            currentLightShader.setVec3("lookPos", cam.getPosition());
+            currentLightShader.setMaterial("material", cat_material);
+            currentLightShader.setLight("default_light", default_light);
             glDrawArrays(GL_TRIANGLES, 0, 36); 
 
-            // light source
-            float radius = 2.0f;
-            opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));
-            default_light.position = default_light.position + translator;
-            opengl::translate(newModel, translator);
-            lightShader.use();
-            lightShader.setMatrix4f("model", newModel);
-            lightShader.setMatrix4f("view", view_glm);
-            lightShader.setMatrix4f("projection", projection);
-            glDrawArrays(GL_TRIANGLES, 0, 36); 
+            // multiple cubes
+            for(int i = 0; i < 10; i++) {
+                opengl::matrix4f cubesModel;
+                opengl::translate(cubesModel, cubePositions[i]);
+                float angle = 20.0f * static_cast<float>(i);
+                opengl::rotate(cubesModel, angle, cubePositions[i]);
+                currentLightShader.setMatrix4f("model", cubesModel);
+                glDrawArrays(GL_TRIANGLES, 0, 36); 
+            }
+
+            if(default_light.type == opengl::POINT || default_light.type == opengl::SPOT){
+                // light source
+                // float radius = 20.0f;
+                // opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));
+                // default_light.position = default_light.position + translator;
+                lightSourceShader.use();
+                lightSourceShader.setMatrix4f("model", newModel);
+                lightSourceShader.setMatrix4f("view", view_glm);
+                lightSourceShader.setMatrix4f("projection", projection);
+                glDrawArrays(GL_TRIANGLES, 0, 36); 
+            }
 
 //          -----------------------------------------------
 
