@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 
 //local includes
 #include <math/vector.hpp>
@@ -20,6 +21,8 @@
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
 }
+
+std::vector<opengl::Light> lightSources;
 
 int main() {
     glfwInit();
@@ -151,11 +154,11 @@ int main() {
             .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
             .position = opengl::vec3(0.0, 0.0, -8.0),
             .direction = opengl::vec3(0.0, 0.0, 1.0),
-            .cutoff = std::cos(opengl::degrees_to_radians(45)),
+            .cutoff = std::cos(opengl::degrees_to_radians(12.5)),
             .constant = 1.0f,
             .linear = 0.09f,
             .quadratic = 0.032f,
-            .type = opengl::POINT
+            .type = opengl::SPOT
         };
         opengl::scale(newModel, opengl::vec3(0.25f, 0.25f, 0.25f));
         opengl::vec3 translator(0.0f, 0.0f, 0.0f);
@@ -186,6 +189,9 @@ int main() {
             cat.bind();
             glActiveTexture(GL_TEXTURE1);
             cat_spec.bind();
+
+            // default_light.position = cam.getPosition();
+            // default_light.direction = cam.getTarget();
 
             currentLightShader.use();
             currentLightShader.setMatrix4f("model", model);

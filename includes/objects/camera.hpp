@@ -19,6 +19,7 @@ public:
     inline void focus() { isFocused = true; }
     inline void unfocus() { isFocused = false; }
     inline vec3 getPosition() { return position; }
+    inline vec3 getTarget() { return target; }
     inline float getFOV() { return fov; }
     void reCalculate();
     // void mouseCallback(GLFWwindow *window, double xpos, double ypos);

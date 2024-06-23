@@ -31,14 +31,14 @@ void main()
     vec3 lightDir = normalize(-default_light.direction);
 
     // cone stuff
-    float angle = dot(normalize(default_light.position - FragPos), lightDir);
+    float cosangle = dot(normalize(default_light.position - FragPos), lightDir);
     int test = 0;
-    if(angle <= default_light.cutoff)
+    if(cosangle >= default_light.cutoff)
         test = 1;
 
     // calculate diffuse lighting
     vec3 norm = normalize(Normal);
-    float diff = max(dot(norm, -lightDir), 0.0);
+    float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = default_light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)) * test;
     
     // calculate specular lighting
