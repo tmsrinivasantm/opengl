@@ -69,5 +69,68 @@ vec3 vec3::operator* (float num) {
     return result;
 }
 
+vec2::vec2(){
+    array[0] = 0.0;
+    array[1] = 0.0;
+    array[2] = 0.0;
+}
+vec2::vec2(float a, float b) {
+    array[0] = a;
+    array[1] = b;
+}
+vec2 vec2::cross(const vec2 &vec) {
+    vec2 result;
+    result.array[0] = array[1]*vec.array[2] - array[2] * vec.array[1];
+    result.array[1] = array[0]*vec.array[2] - array[2] * vec.array[0];
 
+    return result;
+}
+float vec2::dot(const vec2 &vec) {
+    return array[0]*vec.array[0] + array[1]*vec.array[1];
+}
+vec2 vec2::normalize() {
+    float sum = 0;
+    float square_sum = (array[0] * array[0]) + (array[1] * array[1]);
+    if ( square_sum == 1 )
+        return *this;
+    else{
+        square_sum = std::sqrt(square_sum);
+        array[0] = array[0]/square_sum;
+        array[1] = array[1]/square_sum;
+    }
+
+    return *this;
+}
+float vec2::operator[] (int index) const {
+    return array[index];
+}
+
+vec2 vec2::operator-(const vec2 &vector) {
+    vec2 result;
+    for(int i = 0; i < 2; i++)
+        result.array[i] = array[i] - vector[i];
+    return result;
+}
+vec2 vec2::operator+(const vec2 &vector) {
+    vec2 result;
+    for(int i = 0; i < 2; i++)
+        result.array[i] = array[i] + vector[i];
+    return result;
+}
+vec2 vec2::operator* (const vec2 &vector) {
+    vec2 result;
+    for(int i = 0; i < 2; i++ ){
+        result.array[i] = array[i] * vector[i];
+    }
+
+    return result;
+}
+vec2 vec2::operator* (float num) {
+    vec2 result;
+    for(int i = 0; i < 2; i++ ){
+        result.array[i] = array[i] * num;
+    }
+
+    return result;
+}
 }

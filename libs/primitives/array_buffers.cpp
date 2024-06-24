@@ -13,6 +13,9 @@ void array_buffer::unbind(){
 void array_buffer::setData(const float data[], int size){
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }
+void array_buffer::setData(const vertex data[], int size) {
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+}
 void array_buffer::bind() {
     glBindBuffer(GL_ARRAY_BUFFER, identifier);
 }

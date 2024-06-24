@@ -20,4 +20,23 @@ public:
 private:
     float array[3];
 };
+class vec2 {
+public:
+    vec2();
+    vec2(float a, float b);
+    vec2 cross(const vec2 &vec);
+    float dot(const vec2 &vec);
+    vec2 normalize();
+    inline void printvector(){
+        std::cout << "[" << array[0] << ", " << array[1] << "]" << std::endl;
+    }
+    float operator[] (int index) const;
+    vec2 operator-(const vec2 &vector);
+    vec2 operator+(const vec2 &vector);
+    vec2 operator* (const vec2 &vector);
+    vec2 operator* (float num);
+private:
+    float array[2];
+
+};
 }
