@@ -27,5 +27,5 @@ add_subdirectory(libs/math)
 target_link_libraries(opengl math)
 
 # meshes
-add_subdirectory(libs/meshes)
-target_link_libraries(opengl meshes)
+# add_subdirectory(libs/meshes)
+# target_link_libraries(opengl meshes)
