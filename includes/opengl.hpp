@@ -16,10 +16,6 @@ struct vertex {
     vec3 Normals;
     vec2 TexCoords;
 };
-struct Texture {
-    unsigned int identifier;
-    unsigned int type;
-};
 struct Material {
     int diffuse;
     int specular;

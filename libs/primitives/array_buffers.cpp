@@ -2,7 +2,6 @@
 namespace opengl {
 array_buffer::array_buffer() {
     glGenBuffers(1, &identifier);
-    bind();
 }
 array_buffer::~array_buffer() {
     glDeleteBuffers(1, &identifier);

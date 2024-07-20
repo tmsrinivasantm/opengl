@@ -1,7 +1,7 @@
 #include <primitives/texture.hpp>
 
 namespace opengl {
-texture::texture(const std::string &filepath) {
+Texture::Texture(const std::string &filepath, const unsigned int type): filePath(filepath), type(type) {
     glGenTextures(1, &identifier);
     bind();
     stbi_set_flip_vertically_on_load(true);
@@ -9,19 +9,18 @@ texture::texture(const std::string &filepath) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    generate(filepath);
 }
-texture::~texture() {
+Texture::~Texture() {
     glDeleteTextures(1, &identifier);
     stbi_image_free(image_data);
 }
-void texture::bind() { glBindTexture(GL_TEXTURE_2D, identifier); }
-void texture::unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
-void texture::generate(const std::string &filepath) {
+void Texture::bind() { glBindTexture(GL_TEXTURE_2D, identifier); }
+void Texture::unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+void Texture::generate() {
 
     int width, height, nrchannels;
 
-    image_data = stbi_load(filepath.c_str(), &width, &height, &nrchannels, 0);
+    image_data = stbi_load(filePath.c_str(), &width, &height, &nrchannels, 0);
     GLenum format;
     if (nrchannels == 1)
         format = GL_RED;
@@ -33,6 +32,6 @@ void texture::generate(const std::string &filepath) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format,
                      GL_UNSIGNED_BYTE, image_data);
     } else
-        std::cout << "FAILED TO LOAD IMAGE " << filepath << std::endl;
+        std::cout << "FAILED TO LOAD IMAGE " << filePath << std::endl;
 }
 } // namespace opengl

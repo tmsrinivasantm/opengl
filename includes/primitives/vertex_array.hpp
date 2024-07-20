@@ -5,8 +5,8 @@ class vertex_array {
 public:
     vertex_array();
     ~vertex_array();
-    void bind();
-    void unbind();
+    void bind() const;
+    void unbind() const;
 private:
     unsigned int identifier;
 };

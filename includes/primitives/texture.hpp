@@ -3,16 +3,19 @@
 #include <iostream>
 #include <deps/stb_image.h>
 namespace opengl {
-class texture {
+class Texture {
 public:
-    texture(const std::string &filepath);
-    ~texture();
+    Texture(const std::string &filepath, const unsigned int type);
+    ~Texture();
     void bind();
     void unbind();
-    void generate(const std::string &filepath);
+    void generate();
     unsigned int getIdentifier() { return identifier; }
+    std::string getPath() { return filePath; }
 private:
     unsigned int identifier;
     unsigned char *image_data;
+    unsigned int type;
+    std::string filePath;
 };
 } // namespace opengl
