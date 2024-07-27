@@ -16,6 +16,9 @@
 #include <glm/matrix.hpp>
 
 // imgui includes
+#include <deps/imgui.h>
+#include <deps/imgui_impl_glfw.h>
+#include <deps/imgui_impl_opengl3.h>
 
 // global vars
 
@@ -42,6 +45,15 @@ int main() {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 130");
+
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -84,9 +96,14 @@ int main() {
         // else if( default_light.type == opengl::SPOT)
         //     currentLightShader = spotlLightShader;
         while (!glfwWindowShouldClose(window)) {
+
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
             currentFrame = (float)glfwGetTime();
             float delta = currentFrame - prevFrame;
@@ -104,6 +121,25 @@ int main() {
             baseShader.setMatrix4f("view", view_glm);
             baseShader.setMatrix4f("projection", projection);
             backpack.Draw(baseShader);
+            {
+                static float f = 0.0f;
+                static int counter = 0;
+
+                ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+                ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+
+                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+
+                if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                    counter++;
+                ImGui::SameLine();
+                ImGui::Text("counter = %d", counter);
+
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+                ImGui::End();
+            }
+
             // multiple cubes
             // for(int i = 0; i < 10; i++) {
             //     opengl::matrix4f cubesModel;
@@ -132,11 +168,16 @@ int main() {
 
 //          -----------------------------------------------
 
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
