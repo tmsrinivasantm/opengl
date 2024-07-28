@@ -4,12 +4,14 @@
 namespace opengl {
 opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);
 opengl::vec3 camFront = opengl::vec3(0.0f, 0.0f, -1.0f);
+unsigned int cam_cursor_capture_type = GLFW_CURSOR_NORMAL;
 bool firstMouse = true;
 float lastX = 300;
 float lastY = 400;
 float yaw = -90.0f;
 float pitch;
 float camFOV = 45.0f;
+ImGuiIO outIO;
 
 camera::camera(GLFWwindow *window)
     : position(vec3(0.0f, 0.0f, 3.0f)), window(window), target(vec3(0,0,0)) {
@@ -48,8 +50,10 @@ matrix4f camera::lookAt() {
     return result;
 }
 
-void camera::init(float deltaTime) {
+void camera::init(float deltaTime, ImGuiIO &io) {
     if (isFocused) {
+        outIO = io;
+        glfwSetInputMode(window, GLFW_CURSOR, cam_cursor_capture_type);
         glfwSetCursorPosCallback(window, mouseCallback);
         glfwSetScrollCallback(window, scrollCallback);
         keyboardInputResolve(window, deltaTime * camSpeed);
@@ -57,14 +61,18 @@ void camera::init(float deltaTime) {
     }
 }
 void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
+    if (cam_cursor_capture_type == GLFW_CURSOR_NORMAL) {
+        outIO.AddMousePosEvent(static_cast<float>(xpos), static_cast<float>(ypos));
+        return;
+    }
+
     if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
     const float sensitivity = 0.1f;
-    float XOffset = xpos - lastX;
-    float YOffset = lastY - ypos;
+    float XOffset = xpos - lastX; float YOffset = lastY - ypos;
 
     XOffset *= sensitivity;
     YOffset *= sensitivity;
@@ -124,6 +132,13 @@ void keyboardInputResolve(GLFWwindow *window, float camSpeed) {
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
         camPosition = camPosition - opengl::vec3(0.0f, camSpeed, 0.0f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        cam_cursor_capture_type = GLFW_CURSOR_NORMAL;
+        firstMouse = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+        cam_cursor_capture_type = GLFW_CURSOR_DISABLED;
     }
 
 }

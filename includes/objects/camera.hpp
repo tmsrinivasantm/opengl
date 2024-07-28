@@ -4,6 +4,7 @@
 #include <math/matrices.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui.h>
 
 namespace opengl {
 class camera {
@@ -12,7 +13,7 @@ public:
     camera(GLFWwindow* window);
     camera(GLFWwindow* window, const vec3 &camPosition);
     camera(GLFWwindow* window, const vec3 &camPosition, const vec3 &camTarget);
-    void init(float deltaTime);
+    void init(float deltaTime, ImGuiIO &io);
     matrix4f lookAt();
     glm::mat4 lookAt_glm();
     inline void setCamSpeed(float camSpeed) { this->camSpeed = camSpeed; }
@@ -23,9 +24,9 @@ public:
     inline float getFOV() { return fov; }
     void reCalculate();
     // void mouseCallback(GLFWwindow *window, double xpos, double ypos);
+    bool isFocused = false;
 private:
     GLFWwindow* window;
-    bool isFocused = false;
     vec3 position;
     vec3 target;
     vec3 up;

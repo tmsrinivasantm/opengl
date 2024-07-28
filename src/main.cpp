@@ -47,7 +47,7 @@ int main() {
     }
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     ImGui::StyleColorsDark();
 
@@ -99,7 +99,6 @@ int main() {
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -112,7 +111,7 @@ int main() {
 //          -------------------- Render -------------------
             projection = opengl::perspective(opengl::degrees_to_radians(cam.getFOV()), 800.0f/600.0f, 0.1f, 100.0f);
             
-            cam.init(delta);
+            cam.init(delta, io);
             cam.focus();
             view_glm = cam.lookAt_glm();
 
