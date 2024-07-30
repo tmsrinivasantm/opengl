@@ -1,3 +1,4 @@
+#include "opengl.hpp"
 #include <model/mesh.hpp>
 namespace opengl {
 Mesh::Mesh(std::vector<vertex> vertices, std::vector<unsigned int> indices,
@@ -39,25 +40,19 @@ void Mesh::setupMesh() {
     glBindVertexArray(0);
 }
 void Mesh::Draw(shader &shader) {
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
+    Material backpack_material;
     for (unsigned int i = 0; i < textures.size(); i++) {
-        int number;
-        std::string name;
         glActiveTexture(GL_TEXTURE0 + i);
-        if (textures[i].type == DIFFUSE) {
-            number = diffuseNr++;
-            name = "texture_diffuse";
-        } else if (textures[i].type == SPECULAR) {
-            number = specularNr++;
-            name = "texture_specular";
-        }
-        // insertIntoFile(shader.getFragShaderPath(), "uniform sampler2D "+name+std::to_string(number), "void main() {");
-
-        shader.setInt((name + std::to_string(number)).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
+        if (textures[i].type == DIFFUSE) {
+            backpack_material.diffuse = i;
+        } else if (textures[i].type == SPECULAR) {
+            backpack_material.specular = i;
+        }
     }
-    glActiveTexture(GL_TEXTURE0);
+    backpack_material.shininess = 32.0f;
+    shader.setMaterial("material", backpack_material);
+    // glActiveTexture(GL_TEXTURE0);
 
     // draw mesh
     glBindVertexArray(VAO);

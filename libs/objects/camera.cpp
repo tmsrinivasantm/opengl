@@ -4,7 +4,7 @@
 namespace opengl {
 opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);
 opengl::vec3 camFront = opengl::vec3(0.0f, 0.0f, -1.0f);
-unsigned int cam_cursor_capture_type = GLFW_CURSOR_NORMAL;
+unsigned int cam_cursor_capture_type = GLFW_CURSOR_DISABLED;
 bool firstMouse = true;
 float lastX = 300;
 float lastY = 400;
