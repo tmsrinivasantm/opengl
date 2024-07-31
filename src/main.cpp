@@ -5,7 +5,6 @@
 //local includes
 #include <math/vector.hpp>
 #include <opengl.hpp>
-#include <objects/cube.hpp>
 #include <primitives/array_buffers.hpp>
 #include <objects/camera.hpp>
 #include <math/matrices.hpp>
@@ -61,6 +60,7 @@ int main() {
     {
 
         opengl::Model backpack("../src/models/backpack/backpack.obj");
+        opengl::Model cube("../src/models/cube/cube.obj");
         opengl::shader baseShader("../shaders/base_material/vert.shader","../shaders/base_material/frag.shader");
         opengl::shader lightSourceShader("../shaders/light_source/vert.shader","../shaders/light_source/frag.shader");
         opengl::shader directionlLightShader("../shaders/directional_light/vert.shader", "../shaders/directional_light/frag.shader");
@@ -71,6 +71,7 @@ int main() {
         opengl::matrix4f view;
         glm::mat4 view_glm;
         opengl::matrix4f model;
+        opengl::matrix4f lightSourceModel;
 
         opengl::camera cam(window);
 
@@ -82,16 +83,20 @@ int main() {
             .ambient = opengl::vec3(0.8, 0.8, 0.8),
             .diffuse = opengl::vec3(1.0, 1.0, 1.0),
             .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
-            .position = opengl::vec3(0.0, 0.0, -8.0),
-            .direction = opengl::vec3(0.0, 0.0, 1.0),
+            .position = opengl::vec3(0.0, 0.0, 16.0),
+            .direction = opengl::vec3(0.0, 0.0, -1.0),
             .outerCutoff = std::cos (opengl::degrees_to_radians(20)),
-            .innerCutoff = std::cos(opengl::degrees_to_radians(12.5)), .constant = 1.0f, .linear = 0.09f, .quadratic = 0.032f,
-            .type = opengl::DIRECTIONAL
+            .innerCutoff = std::cos(opengl::degrees_to_radians(12.5)), 
+            .constant = 1.0f, 
+            .linear = 0.09f, 
+            .quadratic = 0,
+            .type = opengl::POINT
         };
+        opengl::translate(lightSourceModel, default_light.position);
+        opengl::scale(lightSourceModel, opengl::vec3(0.125f, 0.125f, 0.125f));
         opengl::shader currentLightShader = baseShader;
         if( default_light.type == opengl::DIRECTIONAL)
-            currentLightShader = directionlLightShader;
-        else if( default_light.type == opengl::POINT)
+            currentLightShader = directionlLightShader; else if( default_light.type == opengl::POINT)
             currentLightShader = pointLightShader;
         else if( default_light.type == opengl::SPOT)
             currentLightShader = spotlLightShader;
@@ -160,11 +165,11 @@ int main() {
                 // float radius = 20.0f;
                 // opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));
                 // default_light.position = default_light.position + translator;
-                // lightSourceShader.use();
-                // lightSourceShader.setMatrix4f("model", newModel);
-                // lightSourceShader.setMatrix4f("view", view_glm);
-                // lightSourceShader.setMatrix4f("projection", projection);
-                // glDrawArrays(GL_TRIANGLES, 0, 36); 
+                lightSourceShader.use();
+                lightSourceShader.setMatrix4f("model", lightSourceModel);
+                lightSourceShader.setMatrix4f("view", view_glm);
+                lightSourceShader.setMatrix4f("projection", projection);
+                cube.Draw(lightSourceShader);
             }
 
 //          -----------------------------------------------
