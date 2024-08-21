@@ -60,6 +60,7 @@ int main() {
     {
 
         opengl::Model backpack("../src/models/backpack/backpack.obj");
+
         opengl::Model cube("../src/models/cube/cube.obj");
         opengl::shader baseShader("../shaders/base_material/vert.shader","../shaders/base_material/frag.shader");
         opengl::shader lightSourceShader("../shaders/light_source/vert.shader","../shaders/light_source/frag.shader");
@@ -94,9 +95,10 @@ int main() {
         };
         opengl::translate(lightSourceModel, default_light.position);
         opengl::scale(lightSourceModel, opengl::vec3(0.125f, 0.125f, 0.125f));
-        opengl::shader currentLightShader = baseShader;
+        opengl::shader &currentLightShader = baseShader;
         if( default_light.type == opengl::DIRECTIONAL)
-            currentLightShader = directionlLightShader; else if( default_light.type == opengl::POINT)
+            currentLightShader = directionlLightShader;
+        else if( default_light.type == opengl::POINT)
             currentLightShader = pointLightShader;
         else if( default_light.type == opengl::SPOT)
             currentLightShader = spotlLightShader;

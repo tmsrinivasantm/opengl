@@ -4,10 +4,10 @@ Model::Model(const std::string &path) {
     loadModel(path);
 }
 Model::~Model() {
-    for(int i = 0; i < textures_loaded.size(); i++) {
-        glDeleteTextures(1, &textures_loaded[i].id);
-        stbi_image_free(textures_loaded[i].image_data);
-    }
+    for(int i = 0; i < textures_loaded.size(); i++) 
+        delete textures_loaded[i];
+    for(int i = 0; i < meshes.size(); i++)
+        delete meshes[i];
 }
 void Model::loadModel(const std::string &path) {
     Assimp::Importer import;
@@ -34,7 +34,7 @@ void Model::processNode(const aiScene *scene, aiNode *node) {
         processNode(scene, node->mChildren[i]);
     }
 }
-Mesh Model::processMesh(const aiScene *scene, aiMesh *mesh) {
+Mesh* Model::processMesh(const aiScene *scene, aiMesh *mesh) {
     std::vector<vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<texture_metadata> textures;
@@ -69,7 +69,7 @@ Mesh Model::processMesh(const aiScene *scene, aiMesh *mesh) {
                         specularMaps.end());
     }
 
-    return Mesh(vertices, indices, textures);
+    return  new Mesh(vertices, indices, textures);
 }
 std::vector<texture_metadata> Model::loadTextures(aiMaterial *material,
                                                   aiTextureType type,
@@ -84,48 +84,31 @@ std::vector<texture_metadata> Model::loadTextures(aiMaterial *material,
         bool skip = false;
 
         for(unsigned int j = 0; j < textures_loaded.size(); j++) {
-            if(std::strcmp(textures_loaded[j].path.c_str(), (directory + "/" + str.C_Str()).c_str()) == 0) {
-                result.push_back(textures_loaded[j]);
+            if(std::strcmp(textures_loaded[j]->getPath().c_str(), texture.path.c_str()) == 0) {
+                result.push_back(texture_metadata{
+                    .id = textures_loaded[j]->getIdentifier(),
+                    .type = textures_loaded[j]->getType(),
+                    .path = textures_loaded[j]->getPath(),
+                });
                 skip = true; 
                 break;
             }
         }
 
         if (!skip) {
-            glGenTextures(1, &texture.id);
-            glBindTexture(GL_TEXTURE_2D, texture.id);
-            stbi_set_flip_vertically_on_load(true);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            textures_loaded.push_back(new Texture(texture.path, typeName));
+            textures_loaded[textures_loaded.size() - 1]->generate();
 
-            texture.image_data =
-                stbi_load(texture.path.c_str(), &width, &height, &nrchannels, 0);
-
-            GLenum format;
-            if (nrchannels == 1)
-                format = GL_RED;
-            else if (nrchannels == 3)
-                format = GL_RGB;
-            else if (nrchannels == 4)
-                format = GL_RGBA;
-            if (texture.image_data) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format,
-                             GL_UNSIGNED_BYTE, texture.image_data);
-            } else
-                std::cout << "FAILED TO LOAD IMAGE " << str.C_Str() << std::endl;
-
+            texture.id = textures_loaded[textures_loaded.size() - 1]->getIdentifier();
             texture.type = typeName;
             result.push_back(texture);
-            textures_loaded.push_back(texture);
         }
     }
     return result;
 }
 void Model::Draw(shader &shader) {
     for (int i = 0; i < meshes.size(); i++) {
-        meshes[i].Draw(shader);
+        meshes[i]->Draw(shader);
     }
 };
 }; // namespace opengl

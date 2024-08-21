@@ -11,19 +11,13 @@ Mesh::Mesh(std::vector<vertex> vertices, std::vector<unsigned int> indices,
     setupMesh();
 }
 void Mesh::setupMesh() {
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    VAO.bind();
+    VBO.bind();
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    VBO.setData(&vertices[0], vertices.size() * sizeof(vertex));
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertex),
-                 &vertices[0], GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-                 &indices[0], GL_STATIC_DRAW);
+    EBO.bind();
+    EBO.setData(&indices[0],indices.size() * sizeof(unsigned int));
 
     // vertex positions
     glEnableVertexAttribArray(0);
@@ -37,7 +31,7 @@ void Mesh::setupMesh() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           (void *)offsetof(vertex, TexCoords));
 
-    glBindVertexArray(0);
+    VAO.unbind();
 }
 void Mesh::Draw(shader &shader) {
     Material backpack_material;
@@ -52,11 +46,10 @@ void Mesh::Draw(shader &shader) {
     }
     backpack_material.shininess = 32.0f;
     shader.setMaterial("material", backpack_material);
-    // glActiveTexture(GL_TEXTURE0);
 
     // draw mesh
-    glBindVertexArray(VAO);
+    VAO.bind();
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    VAO.unbind();
 }
 }; // namespace opengl

@@ -7,6 +7,7 @@ public:
     ~vertex_array();
     void bind() const;
     void unbind() const;
+    unsigned int getID() { return identifier; }
 private:
     unsigned int identifier;
 };

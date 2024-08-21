@@ -12,6 +12,7 @@ public:
     void generate();
     unsigned int getIdentifier() { return identifier; }
     std::string getPath() { return filePath; }
+    unsigned int getType() { return type; }
 private:
     unsigned int identifier;
     unsigned char *image_data;
