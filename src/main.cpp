@@ -148,25 +148,11 @@ int main() {
                 ImGui::End();
             }
 
-            // multiple cubes
-            // for(int i = 0; i < 10; i++) {
-            //     opengl::matrix4f cubesModel;
-            //     opengl::translate(cubesModel, cubePositions[i]);
-            //     float angle = 20.0f * static_cast<float>(i);
-            //     opengl::rotate(cubesModel, angle, cubePositions[i]);
-            //     baseShader.setMatrix4f("model", cubesModel);
-            //     glDrawArrays(GL_TRIANGLES, 0, 36); 
-            // }
-
             if (default_light.type == opengl::SPOT) { // only for flashlight effect. Otherwise pair it with the light source cube
                     default_light.position = cam.getPosition();
                     default_light.direction = cam.getTarget();
             }
             if(default_light.type == opengl::POINT) {
-                // light source
-                // float radius = 20.0f;
-                // opengl::vec3 translator((delta * sin(currentFrame) * radius), 0.0f, (delta * cos(currentFrame) * radius));
-                // default_light.position = default_light.position + translator;
                 lightSourceShader.use();
                 lightSourceShader.setMatrix4f("model", lightSourceModel);
                 lightSourceShader.setMatrix4f("view", view_glm);
