@@ -80,11 +80,12 @@ int main() {
         float currentFrame = 0.0f;
         glEnable(GL_DEPTH_TEST);
 
+        opengl::vec3 default_light_position = opengl::vec3(0.0, 0.0, 16.0);
         opengl::Light default_light = {
             .ambient = opengl::vec3(0.8, 0.8, 0.8),
             .diffuse = opengl::vec3(1.0, 1.0, 1.0),
             .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
-            .position = opengl::vec3(0.0, 0.0, 16.0),
+            .position = default_light_position,
             .direction = opengl::vec3(0.0, 0.0, -1.0),
             .outerCutoff = std::cos (opengl::degrees_to_radians(20)),
             .innerCutoff = std::cos(opengl::degrees_to_radians(12.5)), 
@@ -102,6 +103,9 @@ int main() {
             currentLightShader = pointLightShader;
         else if( default_light.type == opengl::SPOT)
             currentLightShader = spotlLightShader;
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
         while (!glfwWindowShouldClose(window)) {
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -129,15 +133,22 @@ int main() {
             currentLightShader.setVec3("lookPos", cam.getPosition());
             currentLightShader.setLight("default_light", default_light);
             backpack.Draw(currentLightShader);
+            int counter = 0;
             {
-                static float f = 0.0f;
-                static int counter = 0;
+                ImGui::Begin("Move things around");                          // Create a window called "Hello, world!" and append into it.
 
-                ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-                ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-
-                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::Text("Coordinates for light source");               // Display some text (you can use a format strings too)
+                ImGui::Text("X: ");
+                ImGui::SameLine();
+                ImGui::SliderFloat("x coord", &x, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                //
+                ImGui::Text("Y: ");
+                ImGui::SameLine();
+                ImGui::SliderFloat("y coord", &y, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                //
+                ImGui::Text("Z: ");
+                ImGui::SameLine();
+                ImGui::SliderFloat("z coord", &z, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
                 if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
                     counter++;
@@ -152,12 +163,16 @@ int main() {
                     default_light.position = cam.getPosition();
                     default_light.direction = cam.getTarget();
             }
+            opengl::matrix4f tempModel = lightSourceModel;
+            opengl::translate(tempModel, opengl::vec3(x, y, z));
+            default_light.position = default_light_position + opengl::vec3(x, y, z);
             if(default_light.type == opengl::POINT) {
                 lightSourceShader.use();
-                lightSourceShader.setMatrix4f("model", lightSourceModel);
+                lightSourceShader.setMatrix4f("model", tempModel);
                 lightSourceShader.setMatrix4f("view", view_glm);
                 lightSourceShader.setMatrix4f("projection", projection);
                 cube.Draw(lightSourceShader);
+
             }
 
 //          -----------------------------------------------
