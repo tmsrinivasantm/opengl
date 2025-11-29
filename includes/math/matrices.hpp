@@ -6,6 +6,7 @@ namespace opengl {
 class matrix4f {
   public:
     matrix4f();
+    matrix4f(float f);
     void print_matrix();
     void make_matrix4f(const float *values);
     void make_matrix4f(const vec3 &v1, const vec3 &v2, const vec3 &v3);
