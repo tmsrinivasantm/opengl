@@ -70,7 +70,6 @@ int main() {
         
         opengl::matrix4f projection;
         opengl::matrix4f view;
-        glm::mat4 view_glm;
         opengl::matrix4f model;
         opengl::matrix4f lightSourceModel;
 
@@ -124,11 +123,11 @@ int main() {
             
             cam.init(delta, io);
             cam.focus();
-            view_glm = cam.lookAt_glm();
+            view = cam.lookAt();
 
             currentLightShader.use();
             currentLightShader.setMatrix4f("model", model);
-            currentLightShader.setMatrix4f("view", view_glm);
+            currentLightShader.setMatrix4f("view", view);
             currentLightShader.setMatrix4f("projection", projection);
             currentLightShader.setVec3("lookPos", cam.getPosition());
             currentLightShader.setLight("default_light", default_light);
@@ -140,15 +139,15 @@ int main() {
                 ImGui::Text("Coordinates for light source");               // Display some text (you can use a format strings too)
                 ImGui::Text("X: ");
                 ImGui::SameLine();
-                ImGui::SliderFloat("x coord", &x, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::SliderFloat("x coord", &x, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
                 //
                 ImGui::Text("Y: ");
                 ImGui::SameLine();
-                ImGui::SliderFloat("y coord", &y, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::SliderFloat("y coord", &y, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
                 //
                 ImGui::Text("Z: ");
                 ImGui::SameLine();
-                ImGui::SliderFloat("z coord", &z, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::SliderFloat("z coord", &z, -1.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 
                 if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
                     counter++;
@@ -169,7 +168,7 @@ int main() {
             if(default_light.type == opengl::POINT) {
                 lightSourceShader.use();
                 lightSourceShader.setMatrix4f("model", tempModel);
-                lightSourceShader.setMatrix4f("view", view_glm);
+                lightSourceShader.setMatrix4f("view", view);
                 lightSourceShader.setMatrix4f("projection", projection);
                 cube.Draw(lightSourceShader);
 

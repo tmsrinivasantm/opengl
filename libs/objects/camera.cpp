@@ -4,6 +4,7 @@
 namespace opengl {
 opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);
 opengl::vec3 camFront = opengl::vec3(0.0f, 0.0f, -1.0f);
+opengl::vec3 WORLD_UP = opengl::vec3(0.0f, 1.0f, 0.0f);
 unsigned int cam_cursor_capture_type = GLFW_CURSOR_DISABLED;
 bool firstMouse = true;
 float lastX = 300;
@@ -20,11 +21,14 @@ camera::camera(GLFWwindow *window)
 camera::camera(GLFWwindow *window, const vec3 &cameraPosition)
     : position(cameraPosition), window(window), target(vec3(0,0,0)) {
     camFront = vec3(0, 0, 0);
+    camPosition = cameraPosition;
     reCalculate();
 }
 camera::camera(GLFWwindow *window, const vec3 &cameraPosition,
                const vec3 &cameraTarget)
     : position(cameraPosition), target(cameraTarget), window(window) {
+    camPosition = cameraPosition;
+    camFront = cameraTarget;
     reCalculate();
 }
 void camera::reCalculate() {
@@ -35,17 +39,12 @@ void camera::reCalculate() {
     right = target.cross(opengl::vec3(0.0f, 1.0f, 0.0f)).normalize();
     up = right.cross(target).normalize();
 }
-glm::mat4 camera::lookAt_glm() {
-    glm::vec3 glm_position = glm::vec3(position[0], position[1], position[2]);
-    glm::vec3 glm_target = glm::vec3(target[0], target[1], target[2]);
-    return glm::lookAt(glm_position, glm_position + glm_target, glm::vec3(0.0f, 1.0f, 0.0f));
-}
 matrix4f camera::lookAt() {
     matrix4f result;
 
-    // vec3 direction = (position - (position + target));
-    result.make_matrix4f(right.normalize(), up.normalize(), target.normalize());
-    translate(result, position * -1.0f);
+    glm::vec3 glm_position = glm::vec3(position[0], position[1], position[2]);
+    glm::vec3 glm_target = glm::vec3(target[0], target[1], target[2]);
+    result = glm::lookAt(glm_position, glm_position + glm_target, glm::vec3(0.0f, 1.0f, 0.0f));
 
     return result;
 }
@@ -119,13 +118,13 @@ void keyboardInputResolve(GLFWwindow *window, float camSpeed) {
         camPosition = camPosition + (camFront * camSpeed);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        camPosition = camPosition - (camFront.cross(vec3(0.0f, 1.0f, 0.0f)).normalize() * camSpeed);
+        camPosition = camPosition - (camFront.cross(WORLD_UP).normalize() * camSpeed);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         camPosition = camPosition - (camFront * camSpeed);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        camPosition = camPosition + (camFront.cross(vec3(0.0f, 1.0f, 0.0f)).normalize() * camSpeed);
+        camPosition = camPosition + (camFront.cross(WORLD_UP).normalize() * camSpeed);
     }
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
         camPosition = camPosition + opengl::vec3(0.0f, camSpeed, 0.0f);

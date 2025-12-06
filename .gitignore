@@ -46,3 +46,4 @@ _deps
 src/textures/*
 src/models/*
 **/make_shader_file.sh
+.vscode

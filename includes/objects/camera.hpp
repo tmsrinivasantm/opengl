@@ -15,7 +15,6 @@ public:
     camera(GLFWwindow* window, const vec3 &camPosition, const vec3 &camTarget);
     void init(float deltaTime, ImGuiIO &io);
     matrix4f lookAt();
-    glm::mat4 lookAt_glm();
     inline void setCamSpeed(float camSpeed) { this->camSpeed = camSpeed; }
     inline void focus() { isFocused = true; }
     inline void unfocus() { isFocused = false; }
@@ -29,7 +28,7 @@ private:
     GLFWwindow* window;
     vec3 position;
     vec3 target;
-    vec3 up;
+    vec3 up = vec3(0.0f, 0.1f, 0.0f);
     vec3 right;
     float camSpeed = 2.5f;
     float fov = 45.0;

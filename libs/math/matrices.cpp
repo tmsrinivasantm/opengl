@@ -87,6 +87,14 @@ void matrix4f::operator=(const matrix4f &mat) {
     }
 }
 
+void matrix4f::operator=(const glm::mat4 mat_glm) {
+    for(int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            values[i][j] = mat_glm[i][j];
+        }
+    }
+}
+
 void matrix4f::make_matrix4f(const float *floats) {
     int count = 0;
     for (int i = 0; i < 4; i++) {

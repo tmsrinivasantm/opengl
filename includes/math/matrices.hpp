@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <glm/glm.hpp>
 #include <iostream>
 #include <math/vector.hpp>
 namespace opengl {
@@ -12,6 +13,7 @@ class matrix4f {
     void make_matrix4f(const vec3 &v1, const vec3 &v2, const vec3 &v3);
     matrix4f operator*(const matrix4f &mat);
     void operator=(const matrix4f &mat);
+    void operator=(const glm::mat4 mat_glm);
     inline float *getValue() { return &values[0][0]; }
     void initialize();
     void transpose();
