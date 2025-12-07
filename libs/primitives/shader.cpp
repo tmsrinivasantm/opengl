@@ -57,13 +57,13 @@ void shader::setFragShader(const std::string &fragFilepath) {
     fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragFilepath);
     glAttachShader(identifier, fragmentShader);
 }
-void shader::setMatrix4f(const std::string &uniformName, matrix4f &matrix) {
+void shader::setMatrix4f(const std::string &uniformName, matlib::matrix4f &matrix) {
     glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName.c_str()), 1, GL_FALSE, matrix.getValue());
 }
 void shader::setMatrix4f(const std::string &uniformName, glm::mat4 &matrix) {
     glUniformMatrix4fv(glGetUniformLocation(identifier, uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
-void shader::setVec3(const std::string &uniformName, const vec3 &vector) {
+void shader::setVec3(const std::string &uniformName, const matlib::vec3 &vector) {
     glUniform3f(glGetUniformLocation(identifier, uniformName.c_str()), vector[0], vector[1], vector[2]);
 }
 void shader::setVec3(const std::string &uniformName, glm::vec3 &vector) {

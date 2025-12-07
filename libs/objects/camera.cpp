@@ -2,9 +2,9 @@
 #include <opengl.hpp>
 
 namespace opengl {
-opengl::vec3 camPosition = opengl::vec3(0.0f, 0.0f, 3.0f);
-opengl::vec3 camFront = opengl::vec3(0.0f, 0.0f, -1.0f);
-opengl::vec3 WORLD_UP = opengl::vec3(0.0f, 1.0f, 0.0f);
+matlib::vec3 camPosition = matlib::vec3(0.0f, 0.0f, 3.0f);
+matlib::vec3 camFront = matlib::vec3(0.0f, 0.0f, -1.0f);
+matlib::vec3 WORLD_UP = matlib::vec3(0.0f, 1.0f, 0.0f);
 unsigned int cam_cursor_capture_type = GLFW_CURSOR_DISABLED;
 bool firstMouse = true;
 float lastX = 300;
@@ -15,17 +15,17 @@ float camFOV = 45.0f;
 ImGuiIO outIO;
 
 camera::camera(GLFWwindow *window)
-    : position(vec3(0.0f, 0.0f, 3.0f)), window(window), target(vec3(0,0,0)) {
+    : position(matlib::vec3(0.0f, 0.0f, 3.0f)), window(window), target(matlib::vec3(0,0,0)) {
     reCalculate();
 }
-camera::camera(GLFWwindow *window, const vec3 &cameraPosition)
-    : position(cameraPosition), window(window), target(vec3(0,0,0)) {
-    camFront = vec3(0, 0, 0);
+camera::camera(GLFWwindow *window, const matlib::vec3 &cameraPosition)
+    : position(cameraPosition), window(window), target(matlib::vec3(0,0,0)) {
+    camFront = matlib::vec3(0, 0, 0);
     camPosition = cameraPosition;
     reCalculate();
 }
-camera::camera(GLFWwindow *window, const vec3 &cameraPosition,
-               const vec3 &cameraTarget)
+camera::camera(GLFWwindow *window, const matlib::vec3 &cameraPosition,
+               const matlib::vec3 &cameraTarget)
     : position(cameraPosition), target(cameraTarget), window(window) {
     camPosition = cameraPosition;
     camFront = cameraTarget;
@@ -36,11 +36,11 @@ void camera::reCalculate() {
     position = camPosition;
     target = camFront;
     // vec3 direction = (position - (position + target)).normalize();
-    right = target.cross(opengl::vec3(0.0f, 1.0f, 0.0f)).normalize();
+    right = target.cross(matlib::vec3(0.0f, 1.0f, 0.0f)).normalize();
     up = right.cross(target).normalize();
 }
-matrix4f camera::lookAt() {
-    matrix4f result;
+matlib::matrix4f camera::lookAt() {
+    matlib::matrix4f result;
 
     glm::vec3 glm_position = glm::vec3(position[0], position[1], position[2]);
     glm::vec3 glm_target = glm::vec3(target[0], target[1], target[2]);
@@ -83,7 +83,7 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
     if (pitch < -89.0f)
         pitch = -89.0f;
 
-    camFront = opengl::vec3(cos(degrees_to_radians(yaw)) * cos(degrees_to_radians(pitch)),
+    camFront = matlib::vec3(cos(degrees_to_radians(yaw)) * cos(degrees_to_radians(pitch)),
                         sin(degrees_to_radians(pitch)),
                         sin(degrees_to_radians(yaw)) * cos(degrees_to_radians(pitch))).normalize();
 
@@ -94,22 +94,22 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
 void keyboardInputResolve(GLFWwindow *window, float camSpeed) {
 
     // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    //     camPosition = camPosition - opengl::vec3(0.0f, 0.0f, camSpeed);
+    //     camPosition = camPosition - matlib::vec3(0.0f, 0.0f, camSpeed);
     // }
     // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-    //     camPosition = camPosition - opengl::vec3(camSpeed, 0.0f, 0.0f);
+    //     camPosition = camPosition - matlib::vec3(camSpeed, 0.0f, 0.0f);
     // }
     // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    //     camPosition = camPosition + opengl::vec3(0.0f, 0.0f, camSpeed);
+    //     camPosition = camPosition + matlib::vec3(0.0f, 0.0f, camSpeed);
     // }
     // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-    //     camPosition = camPosition + opengl::vec3(camSpeed, 0.0f, 0.0f);
+    //     camPosition = camPosition + matlib::vec3(camSpeed, 0.0f, 0.0f);
     // }
     // if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-    //     camPosition = camPosition + opengl::vec3(0.0f, camSpeed, 0.0f);
+    //     camPosition = camPosition + matlib::vec3(0.0f, camSpeed, 0.0f);
     // }
     // if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-    //     camPosition = camPosition - opengl::vec3(0.0f, camSpeed, 0.0f);
+    //     camPosition = camPosition - matlib::vec3(0.0f, camSpeed, 0.0f);
     // }
 
     const float cameraSpeed = 0.05f;
@@ -127,10 +127,10 @@ void keyboardInputResolve(GLFWwindow *window, float camSpeed) {
         camPosition = camPosition + (camFront.cross(WORLD_UP).normalize() * camSpeed);
     }
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-        camPosition = camPosition + opengl::vec3(0.0f, camSpeed, 0.0f);
+        camPosition = camPosition + matlib::vec3(0.0f, camSpeed, 0.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-        camPosition = camPosition - opengl::vec3(0.0f, camSpeed, 0.0f);
+        camPosition = camPosition - matlib::vec3(0.0f, camSpeed, 0.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         cam_cursor_capture_type = GLFW_CURSOR_NORMAL;

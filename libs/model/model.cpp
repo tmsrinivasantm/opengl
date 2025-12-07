@@ -41,15 +41,15 @@ Mesh* Model::processMesh(const aiScene *scene, aiMesh *mesh) {
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         vertex *vertex = new struct vertex();
-        vertex->Position = vec3(mesh->mVertices[i].x, mesh->mVertices[i].y,
+        vertex->Position = matlib::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y,
                                mesh->mVertices[i].z);
         vertex->Normals =
-            vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+            matlib::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
         if (mesh->mTextureCoords[0]) {
-            vertex->TexCoords = vec2(mesh->mTextureCoords[0][i].x,
+            vertex->TexCoords = matlib::vec2(mesh->mTextureCoords[0][i].x,
                                     mesh->mTextureCoords[0][i].y);
         } else
-            vertex->TexCoords = vec2(0.0f, 0.0f);
+            vertex->TexCoords = matlib::vec2(0.0f, 0.0f);
         vertices.push_back(*vertex);
         delete vertex;
     }

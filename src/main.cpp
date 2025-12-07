@@ -3,11 +3,11 @@
 #include <vector>
 
 //local includes
-#include <math/vector.hpp>
+#include "../vendor/matlib/includes/vec.hpp"
 #include <opengl.hpp>
 #include <primitives/array_buffers.hpp>
 #include <objects/camera.hpp>
-#include <math/matrices.hpp>
+#include "../vendor/matlib/includes/matrices.hpp"
 #include <primitives/shader.hpp>
 #include <primitives/texture.hpp>
 #include <model/model.hpp>
@@ -68,10 +68,10 @@ int main() {
         opengl::shader pointLightShader("../shaders/point_light/vert.shader", "../shaders/point_light/frag.shader");
         opengl::shader spotlLightShader("../shaders/spot_light/vert.shader", "../shaders/spot_light/frag.shader");
         
-        opengl::matrix4f projection;
-        opengl::matrix4f view;
-        opengl::matrix4f model;
-        opengl::matrix4f lightSourceModel;
+        matlib::matrix4f projection;
+        matlib::matrix4f view;
+        matlib::matrix4f model;
+        matlib::matrix4f lightSourceModel;
 
         opengl::camera cam(window);
 
@@ -79,13 +79,13 @@ int main() {
         float currentFrame = 0.0f;
         glEnable(GL_DEPTH_TEST);
 
-        opengl::vec3 default_light_position = opengl::vec3(0.0, 0.0, 16.0);
+        matlib::vec3 default_light_position = matlib::vec3(0.0, 0.0, 16.0);
         opengl::Light default_light = {
-            .ambient = opengl::vec3(0.8, 0.8, 0.8),
-            .diffuse = opengl::vec3(1.0, 1.0, 1.0),
-            .specular = opengl::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
+            .ambient = matlib::vec3(0.8, 0.8, 0.8),
+            .diffuse = matlib::vec3(1.0, 1.0, 1.0),
+            .specular = matlib::vec3(1.0, 1.0, 1.0),    // light's diffuse and specular should be the same
             .position = default_light_position,
-            .direction = opengl::vec3(0.0, 0.0, -1.0),
+            .direction = matlib::vec3(0.0, 0.0, -1.0),
             .outerCutoff = std::cos (opengl::degrees_to_radians(20)),
             .innerCutoff = std::cos(opengl::degrees_to_radians(12.5)), 
             .constant = 1.0f, 
@@ -93,8 +93,8 @@ int main() {
             .quadratic = 0,
             .type = opengl::POINT
         };
-        opengl::translate(lightSourceModel, default_light.position);
-        opengl::scale(lightSourceModel, opengl::vec3(0.125f, 0.125f, 0.125f));
+        matlib::translate(lightSourceModel, default_light.position);
+        matlib::scale(lightSourceModel, matlib::vec3(0.125f, 0.125f, 0.125f));
         opengl::shader &currentLightShader = baseShader;
         if( default_light.type == opengl::DIRECTIONAL)
             currentLightShader = directionlLightShader;
@@ -119,7 +119,7 @@ int main() {
             prevFrame = currentFrame;
 
 //          -------------------- Render -------------------
-            projection = opengl::perspective(opengl::degrees_to_radians(cam.getFOV()), 1920.0f/1080.0f, 0.1f, 100.0f);
+            projection = matlib::perspective(opengl::degrees_to_radians(cam.getFOV()), 1920.0f/1080.0f, 0.1f, 100.0f);
             
             cam.init(delta, io);
             cam.focus();
@@ -162,9 +162,9 @@ int main() {
                     default_light.position = cam.getPosition();
                     default_light.direction = cam.getTarget();
             }
-            opengl::matrix4f tempModel = lightSourceModel;
-            opengl::translate(tempModel, opengl::vec3(x, y, z));
-            default_light.position = default_light_position + opengl::vec3(x, y, z);
+            matlib::matrix4f tempModel = lightSourceModel;
+            matlib::translate(tempModel, matlib::vec3(x, y, z));
+            default_light.position = default_light_position + matlib::vec3(x, y, z);
             if(default_light.type == opengl::POINT) {
                 lightSourceShader.use();
                 lightSourceShader.setMatrix4f("model", tempModel);

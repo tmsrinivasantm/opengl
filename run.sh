@@ -2,16 +2,13 @@
 INPUT="$1"
 if  [ -z $INPUT ]; then
     cd build || exit
-    make
-    ./opengl
+    make && ./opengl
 elif [ $INPUT = "val" ]; then
     cd build || exit
-    make
-    valgrind ./opengl
+    make && valgrind ./opengl
     exit 0
 elif [ $INPUT = "gdb" ]; then
     cd build || exit
-    make
-    gdb ./opengl
+    make && gdb ./opengl
     exit 0
 fi

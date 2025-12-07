@@ -1,5 +1,5 @@
 #pragma once
-#include <math/vector.hpp>
+#include "../vendor/matlib/includes/vec.hpp"
 namespace opengl {
 inline float degrees_to_radians(float angle) { return 0.0174533 * angle; }
 enum Light_Type {
@@ -12,9 +12,9 @@ enum Texture_Type {
     SPECULAR = 1
 };
 struct vertex {
-    vec3 Position;
-    vec3 Normals;
-    vec2 TexCoords;
+    matlib::vec3 Position;
+    matlib::vec3 Normals;
+    matlib::vec2 TexCoords;
 };
 struct Material {
     int diffuse;
@@ -22,11 +22,11 @@ struct Material {
     float shininess;
 };
 struct Light {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    vec3 position;
-    vec3 direction;
+    matlib::vec3 ambient;
+    matlib::vec3 diffuse;
+    matlib::vec3 specular;
+    matlib::vec3 position;
+    matlib::vec3 direction;
     float outerCutoff;
     float innerCutoff;
     float constant;
