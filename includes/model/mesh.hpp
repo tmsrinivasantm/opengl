@@ -1,7 +1,7 @@
 #pragma once
 #include <deps/stb_image.h>
 #include <glad/glad.h>
-#include <math/vector.hpp>
+#include "../vendor/matlib/includes/vec.hpp"
 #include <primitives/shader.hpp>
 #include <primitives/vertex_array.hpp>
 #include <primitives/array_buffers.hpp>
